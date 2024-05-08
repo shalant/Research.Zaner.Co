@@ -1,0 +1,81 @@
+<div class="container" *ngIf="!isValidQuery">
+    <h3>Query is not applicable, no one likes soybean liquor</h3>
+    <!-- <app-404></app-404> -->
+</div>
+
+<div class="container" *ngIf="isValidQuery">
+    <div class="d-flex flex-row mt-2">
+        <!-- <div class="row mt-3" > -->
+        <div class="col-md-4">
+            <h1 *ngIf="!newUsdaData$">List of Usda Data</h1>
+            <!-- <h1 *ngIf="newUsdaData$">{{selectedShortDesc}}</h1> -->
+            <img *ngIf="newUsdaData$" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge" height="100" style="background-color: #727cf5;" class="p-2">
+        </div>
+        <div class="col-md-8 d-flex flex-row">
+            <div class="mx-1">
+                <select class="form-select mt-2" aria-label="Default select example"
+                    (change)="onSelectCommodity($event)">
+                    <option selected>Commodity</option>
+                    <option value="CORN">Corn</option>
+                    <option value="SOYBEANS">Soybeans</option>
+                </select>
+            </div>
+            <!-- <div class="col-md-2"> -->
+            <div class="mx-1" style="width: 20%;">
+                <select class="form-select mt-2" aria-label="Default select example" (change)="onSelectMetric($event)">
+                    <option selected>Metric</option>
+                    <option value="AREA PLANTED">Acres Planted</option>
+                    <option value="AREA HARVESTED">Acres Harvested</option>
+                    <option value="CONDITION">Condition (excellent)</option>
+                    <option value="ETHANOL USAGE">Ethanol Usage</option>
+                    <option value="PRODUCTION">Production</option>
+                    <option value="PROGRESS">Progress - Emerged</option>
+                    <option value="RESIDUAL USAGE">Residual Usage</option>
+                    <option value="STOCKS">Stocks</option>
+                </select>
+            </div>
+            <!-- <div class="col-md-2"> -->
+            <div class="mx-1">
+                <select class="form-select mt-2" aria-label="Default select example" (change)="onSelectYear($event)">
+                    <option selected>Years</option>
+                    <option value="2024">2024</option>
+                    <option value="2023">2023</option>
+                    <option value="2022">2022</option>
+                    <option value="2021">2021</option>
+                    <option value="2020">2020</option>
+                </select>
+            </div>
+            <!-- <div class="col-md-1 mt-2"> -->
+            <div class="mt-2 mx-1">
+                <button class="btn btn-primary mx-1" id="load-usda-button"
+                    (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedYear, selectedShortDesc)">Go</button>
+                <button class="btn btn-secondary mx-1">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="">
+        <canvas id="barchart"></canvas>
+    </div>
+
+    <ng-container *ngIf="newUsdaData$ | async as newUsdaData">
+        <table class="table table-bordered mt-3">
+            <thead>
+                <th>Time period</th>
+                <th>Value</th>
+                <th>Actions</th>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of newUsdaData">
+                    <td>{{item.year}} {{item.reference_period_desc}}</td>
+                    <td>{{item.value}}</td>
+                    <td>
+                        <a class="btn btn-primary">Edit</a>
+                    </td>
+                </tr>
+            </tbody>
+            <button class="btn btn-success mt-3">Export to Excel</button>
+        </table>
+    </ng-container>
+
+</div>

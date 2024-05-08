@@ -1,12 +1,24 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavbarComponent } from "./core/components/navbar/navbar.component";
+import { HeaderComponent } from "./core/components/header/header.component";
+import { DarkToggleComponent } from "./core/components/dark-toggle/dark-toggle.component";
+import { SidebarComponent } from "./core/components/sidebar/sidebar.component";
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+    selector: 'app-root',
+    standalone: true,
+    templateUrl: './app.component.html',
+    styleUrl: './app.component.css',
+    imports: [
+        RouterOutlet,
+        RouterLink,
+        RouterLinkActive,
+        NavbarComponent,
+        HeaderComponent,
+        DarkToggleComponent,
+        SidebarComponent
+    ]
 })
 export class AppComponent {
   title = 'frontend';
