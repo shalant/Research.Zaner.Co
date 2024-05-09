@@ -1,14 +1,19 @@
 import { Component, ViewChild } from '@angular/core';
 import { ChartOptions } from 'chart.js';
+import { faScrewdriverWrench } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @Component({
   selector: 'app-usa-map',
   standalone: true,
-  imports: [],
+  imports: [FontAwesomeModule],
   templateUrl: './usa-map.component.html',
   styleUrl: './usa-map.component.css'
 })
+
 export class UsaMapComponent {
+  faScrewdriverWrench = faScrewdriverWrench;
+
   countryChart!: Partial<ChartOptions>
   regions:any = {
     "IL":1,

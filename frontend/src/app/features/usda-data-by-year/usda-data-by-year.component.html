@@ -1,27 +1,20 @@
 <div class="container">
 
-
-    <p>Started on May 2nd, from a good discussion with Dan</p>
-    <ul>
-      <li><s>first goal is to display ethanol usage by year</s></li>
-      <li><s>second goal is to display stockpiles by year</s></li>
-      <li>Some charts correlating with price</li>
-    </ul>
     <div class="row">
       <div class="d-flex flex-row">
         <div class="col-md-5">
           <h1>Compare Usda Data year to year</h1>
-          <p>Select multiple years for comparison</p>
+          <p *ngIf="!newUsdaData$">Select multiple years for comparison</p>
         </div>
         <div class="mx-1">
-          <select class="form-select mt-2" aria-label="Default select example" (change)="onSelectCommodity($event)">
+          <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectCommodity($event)">
             <option selected>Commodity</option>
             <option value="CORN">Corn</option>
             <option value="SOYBEANS">Soybeans</option>
           </select>
         </div>
         <div class="mx-1" style="width: 10%;">
-          <select class="form-select mt-2" aria-label="Default select example" (change)="onSelectMetric($event)">
+          <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectMetric($event)">
             <option selected>Metric</option>
             <option value="AREA PLANTED">Acres Planted</option>
             <!-- <option value="AREA HARVESTED">Acres Harvested</option> -->
@@ -34,7 +27,7 @@
           </select>
         </div>
         <div class="mx-1">
-          <select class="form-select multiple mt-2" aria-label="Default select example" (change)="onSelectYear($event)">
+          <select class="form-select multiple mt-4" aria-label="Default select example" (change)="onSelectYear($event)">
             <option selected>Years</option>
             <!-- <option value="2024">2024</option>
             <option value="2023">2023</option>
@@ -43,7 +36,7 @@
             <option value="2020">2020</option>
           </select>
         </div>
-        <div class="mt-2 ">
+        <div class="mt-4 ">
           <button class="btn btn-primary mx-1"  *ngIf="!isLoading"
             (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedYear, selectedShortDesc)">Go</button>
           <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
@@ -71,7 +64,7 @@
                     [striped]="true"
                     [animated]="true"
                   ></ngb-progressbar> -->
-                <img *ngIf="!isLoading" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge" height="70" style="background-color: #727cf5;" class="p-1">
+                <img *ngIf="!isLoading" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge" height="70" style="background-color: rgba(13,110,253,1.0);" class="p-2">
                 <div dir="ltr">
                   <div>
                     <canvas id="linechart"></canvas>

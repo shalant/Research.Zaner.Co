@@ -343,7 +343,7 @@ export class UsdaDataByYearComponent {
             text: this.selectedShortDesc,
             font: {
               size: 25,
-              family: "Nunito"
+              family: "Roboto",
             },
             align: 'center'
           }

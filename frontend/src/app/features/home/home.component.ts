@@ -57,9 +57,9 @@ export class HomeComponent implements OnInit {
             })
         }
     }
-    myChart: any = '';
+    // myChart: any = '';
 
 
-}
+
 
 

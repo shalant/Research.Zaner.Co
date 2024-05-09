@@ -103,6 +103,8 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     }
   
     loadDataWithParams(selectedMetric: string, selectedCommodity: string, selectedYear: string, selectedShortDesc: string): void {
+      this.isLoading = true;
+
       debugger
       switch (this.selectedMetric) {
         case 'AREA PLANTED':
@@ -155,7 +157,9 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       if(this.isLoading) {
         document.getElementById("load-usda-button")?.classList.add("spinner-border")
       }
-  
+      if(this.isLoading) {
+        this.DisplaySpinner();
+      }
       if (selectedMetric == 'RESIDUAL USAGE' && selectedCommodity == 'SOYBEANS' || selectedMetric == 'ETHANOL USAGE' && selectedCommodity == 'SOYBEANS') {
         // TODO - display a pretty error display
         this.isValidQuery = false;
@@ -258,7 +262,9 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           datasets: [{
             label: this.unit,
             data: mainData,
-            backgroundColor: '$8d830a',
+            // backgroundColor: '$8d830a',
+            backgroundColor: '#6B911B',
+
             borderColor: ['#6B911B'],
             borderWidth: 1
           }]
@@ -273,11 +279,31 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
               //   suggestedMax: 'max-int-value'       
               // }
             }
-          }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: this.selectedShortDesc,
+              font: {
+                size: 25,
+                family: "Roboto",
+              },
+              align: 'center'
+            }
+          },
         }
       });
+      this.isLoading = false;
+      this.RemoveSpinner();
+    }
+
+    DisplaySpinner() {
+      document.getElementById("load-usda-button")?.classList.add("spinner-border")
     }
   
+    RemoveSpinner() {
+      document.getElementById("load-usda-button")?.classList.remove("spinner-border")
+    }
     ngOnDestroy(): void {
       this.getUsdaSubscription?.unsubscribe();
     }
