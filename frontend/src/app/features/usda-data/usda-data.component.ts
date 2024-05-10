@@ -5,11 +5,12 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Chart, registerables } from 'chart.js/auto';
 import { UsdaService } from '../services/usda.service';
+import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-usda-data',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,RouterOutlet, RouterModule],
   templateUrl: './usda-data.component.html',
   styleUrl: './usda-data.component.css'
 })
@@ -151,20 +152,23 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           break;
         default:
           break;
-      }    if(!this.value) {
-        this.isLoading = true;
-      }
-      if(this.isLoading) {
-        document.getElementById("load-usda-button")?.classList.add("spinner-border")
-      }
+      }    
+      // if(!this.value) {
+      //   this.isLoading = true;
+      // }
+      // if(this.isLoading) {
+      //   document.getElementById("load-usda-button")?.classList.add("spinner-border")
+      // }
+      debugger
       if(this.isLoading) {
         this.DisplaySpinner();
       }
+
       if (selectedMetric == 'RESIDUAL USAGE' && selectedCommodity == 'SOYBEANS' || selectedMetric == 'ETHANOL USAGE' && selectedCommodity == 'SOYBEANS') {
         // TODO - display a pretty error display
         this.isValidQuery = false;
       }
-  debugger
+  
       if (this.myChart !== '') {
         this.myChart.destroy();
         this.value = [];
@@ -174,9 +178,10 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       // console.log(`https://localhost:7281/api/UsdaInfo?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
       
       if (this.isValidQuery) {
-        debugger
-        this.newUsdaData$ = this.http.get<Datum[]>(`https://localhost:7281/api/UsdaInfo?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
-  
+        
+        // this.newUsdaData$ = this.http.get<Datum[]>(`https://localhost:7281/api/UsdaInfo?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
+        this.newUsdaData$ = this.http.get<Datum[]>(`https://localhost:7281/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
+
         this.getUsdaSubscription = this.newUsdaData$
           .subscribe({
             next: (response) => {
@@ -188,10 +193,11 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                       break;
                   case 'AREA HARVESTED':
+                    
                     if(element.domaincat_desc == 'NOT SPECIFIED' 
-                      && element.statisticcat_desc == 'AREA HARVESTED'
-                      && (element.short_desc == 'CORN, GRAIN - ACRES HARVESTED' 
-                        || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                      && element.statisticcat_desc == 'AREA PLANTED') {
+                      // && (element.short_desc == 'CORN - ACRES HARVESTED' 
+                      //   || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
                       this.period.push(element.year + ' ' + element.reference_period_desc)
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                     }
@@ -263,9 +269,9 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
             label: this.unit,
             data: mainData,
             // backgroundColor: '$8d830a',
-            backgroundColor: '#6B911B',
+            backgroundColor: 'rgba(13,110,253,1.0)',
 
-            borderColor: ['#6B911B'],
+            borderColor: ['rgba(13,110,253,1.0)'],
             borderWidth: 1
           }]
         },
@@ -304,6 +310,18 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     RemoveSpinner() {
       document.getElementById("load-usda-button")?.classList.remove("spinner-border")
     }
+
+    reload(){
+      // any other execution
+      this.ngOnInit()
+      this.myChart.destroy();
+      this.value = [];
+      this.period = [];
+      // this.multiyearPeriod = [];
+      // this.multiyearValue = [];
+      console.log('click')
+    }
+
     ngOnDestroy(): void {
       this.getUsdaSubscription?.unsubscribe();
     }

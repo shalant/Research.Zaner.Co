@@ -1,7 +1,7 @@
-<div class="container" *ngIf="!isValidQuery">
-    <h3>Query is not applicable, no one likes soybean liquor</h3>
-    <!-- <app-404></app-404> -->
-</div>
+<!-- <div class="container" *ngIf="!isValidQuery">
+    <h3>Query is not applicable</h3>
+    <a [routerLink]="['/']" class="btn btn-secondary" (click)="reload">Back</a>
+</div> -->
 
 <div class="container" *ngIf="isValidQuery">
     <div class="d-flex flex-row mt-2">
@@ -22,7 +22,7 @@
                 </select>
             </div>
             <!-- <div class="col-md-2"> -->
-            <div class="mx-1" style="width: 20%;">
+            <div class="mx-1" style="width: 25%;">
                 <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectMetric($event)">
                     <option selected>Metric</option>
                     <option value="AREA PLANTED">Acres Planted</option>
@@ -48,9 +48,8 @@
             </div>
             <!-- <div class="col-md-1 mt-2"> -->
             <div class="mt-4 mx-1">
-                <button class="btn btn-primary mx-1" id="load-usda-button" *ngIf="!isLoading"
+                <button class="btn btn-primary mx-1"  *ngIf="!isLoading"
                     (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedYear, selectedShortDesc)">Go</button>
-                <button class="btn btn-secondary mx-1">Refresh</button>
                 <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
                     <span
                       class="spinner-border spinner-border-sm me-1"
@@ -59,6 +58,7 @@
                     ></span>
                     Go...
                   </button>
+                  <button class="btn btn-secondary mx-1" (click)="reload()">Refresh</button>
             </div>
         </div>
     </div>
