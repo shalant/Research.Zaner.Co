@@ -258,10 +258,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
               console.log('y axis: ' + this.value)
               this.RenderChart(this.period, this.value, 'bar', 'barchart');
             }
-  
           })
-          // document.getElementById("load-usda-button")?.classList.remove("spinner-border")
-          this.isLoading = false;
       }
     }
   

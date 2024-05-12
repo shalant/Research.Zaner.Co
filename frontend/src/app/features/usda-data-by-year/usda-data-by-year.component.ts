@@ -380,4 +380,5 @@ export class UsdaDataByYearComponent {
   ngOnDestroy(): void {
     this.getUsdaSubscription?.unsubscribe();
   }
+  
 }
