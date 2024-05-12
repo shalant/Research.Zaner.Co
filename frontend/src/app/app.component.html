@@ -1,5 +1,4 @@
-<app-navbar></app-navbar>
-<!-- <div class="container-fluid"> -->
+<!-- <app-navbar></app-navbar>
   <div class="row">
     <div class="col-md-3 col-lg-2">
       <app-sidebar></app-sidebar>
@@ -9,12 +8,74 @@
       <router-outlet></router-outlet>
 
     </div>
-  </div>
-<!-- </div> -->
-<!-- <div class="container-fluid">
-  <div class="row">
+  </div> -->
 
-  </div>
-</div> -->
+
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+  <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">ZANER</a>
+  <button class="navbar-toggler position-absolute d-md-none collapsed mt-1" type="button" data-bs-toggle="collapse"
+    data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+</nav>
 
 <app-dark-toggle></app-dark-toggle>
+
+<div class="container-fluid">
+  <div class="row">
+    <!-- <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"> -->
+    <nav id="sidebarMenu" class="col-md-3 sidebar collapse bg-light">
+
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/usda-data']">
+              <fa-icon [icon]="faWheatAwn"></fa-icon>
+              <span>USDA Data</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/usda-data-by-year']">
+              <fa-icon [icon]="faChartLine"></fa-icon>
+              <span>USDA Data By Year</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/usa-map']">
+              <fa-icon [icon]="faFlagUsa"></fa-icon>
+              <span>USA Map</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/world-map']">
+              <fa-icon [icon]="faGlobe"></fa-icon>
+              <span>World Map</span>
+            </a>
+          </li>
+        </ul>
+        <hr class="my-3">
+
+        <ul class="nav flex-column mb-auto">
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2 text-dark" href="#">
+              <fa-icon [icon]="faGear"></fa-icon>
+              <span class="">Settings</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2 text-dark" href="#">
+              <fa-icon [icon]="faUser"></fa-icon>
+              <span>Sign out</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    <!-- <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4"> -->
+    <main role="main" class="col-md-9 ">
+
+      <router-outlet></router-outlet>
+
+    </main>
+  </div>
+</div>

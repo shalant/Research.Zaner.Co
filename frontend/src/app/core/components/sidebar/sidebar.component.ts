@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faWheatAwn, faChartLine, faFlagUsa, faGlobe, faGear, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faWheatAwn, faChartLine, faFlagUsa, faGlobe, faGear, faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { RouterModule, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -18,4 +18,5 @@ export class SidebarComponent {
   faGlobe = faGlobe;
   faGear = faGear;
   faUser = faUser;
+  faBars = faBars;
 }
