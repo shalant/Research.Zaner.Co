@@ -1,30 +1,17 @@
-<!-- <app-navbar></app-navbar>
-  <div class="row">
-    <div class="col-md-3 col-lg-2">
-      <app-sidebar></app-sidebar>
-
-    </div>
-    <div class="col-sm-9">
-      <router-outlet></router-outlet>
-
-    </div>
-  </div> -->
-
-
-<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
   <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">ZANER</a>
   <button class="navbar-toggler position-absolute d-md-none collapsed mt-1" type="button" data-bs-toggle="collapse"
     data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
-</nav>
+</header>
 
 <app-dark-toggle></app-dark-toggle>
 
 <div class="container-fluid">
   <div class="row">
     <!-- <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"> -->
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block   bg-light">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light collapse">
 
       <div class="sidebar-sticky pt-3">
         <ul class="nav flex-column">
@@ -52,10 +39,10 @@
               <span>World Map</span>
             </a>
           </li>
-        </ul>
+        <!-- </ul>
         <hr class="my-3">
 
-        <ul class="nav flex-column mb-auto">
+        <ul class="nav flex-column mb-auto"> -->
           <li class="nav-item">
             <a class="nav-link d-flex align-items-center gap-2 text-dark" href="#">
               <fa-icon [icon]="faGear"></fa-icon>
@@ -79,3 +66,17 @@
     </main>
   </div>
 </div>
+
+
+
+<!-- <app-navbar></app-navbar>
+  <div class="row">
+    <div class="col-md-3 col-lg-2">
+      <app-sidebar></app-sidebar>
+
+    </div>
+    <div class="col-sm-9">
+      <router-outlet></router-outlet>
+
+    </div>
+  </div> -->

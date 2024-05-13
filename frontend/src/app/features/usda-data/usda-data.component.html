@@ -9,113 +9,120 @@
 <!-- <div class="row mt-3" > -->
 
 
-<div class="container">
-  <div class="row">
-    <div class="d-flex flex-row">
-      <div class="col-md-4 mt-4">
-        <h2>List of Usda Data</h2>
-        <!-- <h1 *ngIf="!newUsdaData$">List of Usda Data</h1> -->
-        <!-- <h1 *ngIf="newUsdaData$">{{selectedShortDesc}}</h1> -->
-        <!-- <img *ngIf="newUsdaData$" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge" height="100" style="background-color: rgba(13,110,253,1.0);" class="p-2"> -->
-      </div>
-      <!-- <div class="col-md-8 d-flex flex-row"> -->
-        <div class="mx-1">
-          <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectCommodity($event)">
-            <option selected>Commodity</option>
-            <option value="CORN">Corn</option>
-            <option value="SOYBEANS">Soybeans</option>
-          </select>
-        </div>
-        <!-- <div class="col-md-2"> -->
-        <div class="mx-1" style="width: 25%;">
-          <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectMetric($event)">
-            <option selected>Metric</option>
-            <option value="AREA PLANTED">Acres Planted</option>
-            <option value="AREA HARVESTED">Acres Harvested</option>
-            <option value="CONDITION">Condition (excellent)</option>
-            <option value="ETHANOL USAGE">Ethanol Usage</option>
-            <option value="PRODUCTION">Production</option>
-            <option value="PROGRESS">Progress - Emerged</option>
-            <option value="RESIDUAL USAGE">Residual Usage</option>
-            <option value="STOCKS">Stocks</option>
-          </select>
-        </div>
-        <!-- <div class="col-md-2"> -->
-        <div class="mx-1">
-          <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectYear($event)">
-            <option selected>Years</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-            <option value="2020">2020</option>
-          </select>
-        </div>
-        <!-- <div class="col-md-1 mt-2"> -->
-        <div class="mt-4 mx-1">
-          <button class="btn btn-primary mx-1" *ngIf="!isLoading"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedYear, selectedShortDesc)">Go</button>
-          <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
-            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
-            Go...
-          </button>
-          <button class="btn btn-secondary mx-1" (click)="reload()">Refresh</button>
-        </div>
-        <!-- </div> -->
-      </div>
+<!-- <div class="container"> -->
+<!-- <div class="row"> -->
+<!-- <div class="d-flex flex-row"> -->
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2" *ngIf="!newUsdaData$">List of Usda Data</h1>
+  <h1 class="h2" *ngIf="newUsdaData$">{{selectedShortDesc}}</h1>
 
-      <ng-container *ngIf="newUsdaData$">
-        <div class="row">
-          <div class="col-xl-12">
-            <div class="card">
-              <div class="card-body">
-                <div *ngIf="isLoading" class="d-flex justify-content-center ">
-                  <h3>...loading</h3>
-                </div>
-                <!-- <ngb-progressbar *ngIf="isLoading"
+  <!-- <div class="col-md-4 mt-4"> -->
+  <!-- <h1 *ngIf="!newUsdaData$">List of Usda Data</h1> -->
+  <!-- <h1 *ngIf="newUsdaData$">{{selectedShortDesc}}</h1> -->
+  <!-- <img *ngIf="newUsdaData$" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge" height="100" style="background-color: rgba(13,110,253,1.0);" class="p-2"> -->
+  <!-- </div> -->
+  <!-- <div class="col-md-8 d-flex flex-row"> -->
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <!-- <div class="mx-1"> -->
+    <form class="form-inline ">
+      <select class="form-select mr-sm-2 my-1" aria-label="Default select example" (change)="onSelectCommodity($event)">
+        <option selected>Commodity</option>
+        <option value="CORN">Corn</option>
+        <option value="SOYBEANS">Soybeans</option>
+      </select>
+      <!-- </div> -->
+      <!-- <div class="col-md-2"> -->
+      <!-- <div class="mx-1" style="width: 25%;"> -->
+      <!-- <select class="form-select mt-4" aria-label="Default select example" (change)="onSelectMetric($event)"> -->
+      <select class="form-select mr-sm-2 my-1" aria-label="Default select example" (change)="onSelectMetric($event)">
+        <option selected>Metric</option>
+        <option value="AREA PLANTED">Acres Planted</option>
+        <option value="AREA HARVESTED">Acres Harvested</option>
+        <option value="CONDITION">Condition (excellent)</option>
+        <option value="ETHANOL USAGE">Ethanol Usage</option>
+        <option value="PRODUCTION">Production</option>
+        <option value="PROGRESS">Progress - Emerged</option>
+        <option value="RESIDUAL USAGE">Residual Usage</option>
+        <option value="STOCKS">Stocks</option>
+      </select>
+      <!-- </div> -->
+      <!-- <div class="col-md-2"> -->
+      <!-- <div class="mx-1"> -->
+      <select class="form-select mr-sm-2 my-1" aria-label="Default select example" (change)="onSelectYear($event)">
+        <option selected>Years</option>
+        <option value="2024">2024</option>
+        <option value="2023">2023</option>
+        <option value="2022">2022</option>
+        <option value="2021">2021</option>
+        <option value="2020">2020</option>
+      </select>
+      <!-- </div> -->
+      <!-- <div class="col-md-1 mt-2"> -->
+      <!-- <div class="mt-4 mx-1"> -->
+      <button class="btn btn-primary mx-1 mt-1" *ngIf="!isLoading"
+        (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedYear, selectedShortDesc)">Go</button>
+      <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
+        <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+        Go...
+      </button>
+      <button class="btn btn-secondary mx-1 mt-1" (click)="reload()">Refresh</button>
+    </form>
+  </div>
+</div>
+
+<ng-container *ngIf="newUsdaData$">
+  <div class="row">
+    <div class="col-xl-12">
+      <div class="card">
+        <div class="card-body">
+          <div *ngIf="isLoading" class="d-flex justify-content-center ">
+            <h3>...loading</h3>
+          </div>
+          <!-- <ngb-progressbar *ngIf="isLoading"
                     [value]="75"
                     [striped]="true"
                     [animated]="true"
                   ></ngb-progressbar> -->
-                <img *ngIf="!isLoading" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge"
-                  height="70" style="background-color: rgba(13,110,253,1.0);" class="p-2">
-                <div dir="ltr">
-                  <div>
-                    <canvas id="barchart"></canvas>
-                  </div>
-                </div>
-              </div>
-              <!-- end card body-->
+          <img *ngIf="!isLoading" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge"
+            height="70" style="background-color: rgba(13,110,253,1.0);" class="p-2">
+          <div dir="ltr">
+            <div>
+              <canvas id="barchart"></canvas>
             </div>
-            <!-- end card -->
           </div>
-          <!-- end col-->
         </div>
-        <!-- end row-->
-      </ng-container>
+        <!-- end card body-->
+      </div>
+      <!-- end card -->
+    </div>
+    <!-- end col-->
+  </div>
+  <!-- end row-->
+</ng-container>
 
-      <!-- <div class="">
+<!-- <div class="">
         <canvas id="barchart"></canvas>
     </div> -->
 
-      <ng-container *ngIf="newUsdaData$ | async as newUsdaData">
-        <table class="table table-bordered mt-3">
-          <thead>
-            <th>Time period</th>
-            <th>Value</th>
-            <th>Actions</th>
-          </thead>
-          <tbody>
-            <tr *ngFor="let item of newUsdaData">
-              <td>{{item.year}} {{item.reference_period_desc}}</td>
-              <td>{{item.value}}</td>
-              <td>
-                <a class="btn btn-primary">Edit</a>
-              </td>
-            </tr>
-          </tbody>
-          <button class="btn btn-success mt-3">Export to Excel</button>
-        </table>
-      </ng-container>
+<ng-container *ngIf="newUsdaData$ | async as newUsdaData">
+  <table class="table table-bordered mt-3">
+    <thead>
+      <th>Time period</th>
+      <th>Value</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of newUsdaData">
+        <td>{{item.year}} {{item.reference_period_desc}}</td>
+        <td>{{item.value}}</td>
+        <td>
+          <a class="btn btn-primary">Edit</a>
+        </td>
+      </tr>
+    </tbody>
+    <button class="btn btn-success mt-3">Export to Excel</button>
+  </table>
+</ng-container>
 
-    </div>
+<!-- </div> -->
+<!-- </div> -->

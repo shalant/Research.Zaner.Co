@@ -368,7 +368,8 @@ export class UsdaDataByYearComponent {
     document.getElementById("load-usda-button")?.classList.remove("spinner-border")
   }
 
-  reload(){
+  reload() {
+    window.location.reload();
     // any other execution
     this.ngOnInit()
     this.myChart.destroy();
@@ -376,7 +377,6 @@ export class UsdaDataByYearComponent {
     this.period = [];
     this.multiyearPeriod = [];
     this.multiyearValue = [];
-    console.log('click')
   }
 
   ngOnDestroy(): void {

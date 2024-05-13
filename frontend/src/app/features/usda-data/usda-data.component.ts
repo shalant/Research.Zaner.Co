@@ -290,17 +290,17 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
               // }
             }
           },
-          plugins: {
-            title: {
-              display: true,
-              text: this.selectedShortDesc,
-              font: {
-                size: 25,
-                family: "Roboto",
-              },
-              align: 'center'
-            }
-          },
+          // plugins: {
+          //   title: {
+          //     display: true,
+          //     text: this.selectedShortDesc,
+          //     font: {
+          //       size: 25,
+          //       family: "Roboto",
+          //     },
+          //     align: 'center'
+          //   }
+          // },
         }
       });
       this.isLoading = false;
@@ -316,14 +316,12 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     }
 
     reload(){
+      window.location.reload();
       // any other execution
       this.ngOnInit()
       this.myChart.destroy();
       this.value = [];
       this.period = [];
-      // this.multiyearPeriod = [];
-      // this.multiyearValue = [];
-      console.log('click')
     }
 
     ngOnDestroy(): void {

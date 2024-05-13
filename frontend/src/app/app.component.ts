@@ -6,7 +6,7 @@ import { DarkToggleComponent } from "./core/components/dark-toggle/dark-toggle.c
 import { SidebarComponent } from "./core/components/sidebar/sidebar.component";
 import { faBars, faChartLine, faFlagUsa, faGear, faGlobe, faUser, faWheatAwn } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { environment } from '../environments/environment.development';
+import { environment } from '../environments/environment';
 
 @Component({
     selector: 'app-root',

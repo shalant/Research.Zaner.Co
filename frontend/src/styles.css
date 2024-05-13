@@ -36,7 +36,7 @@
   }
 
   .sidebar-sticky {
-    height: calc(100vh + 1200px);
+    height: calc(100vh - 48px);
     max-height:max-content;
 
     overflow-y: auto;
@@ -139,4 +139,16 @@
   .card {
     border: none;
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  }
+
+  .form-inline {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+  }
+
+  @media (min-width: 768px) {
+    .flex-md-wrap {
+      flex-wrap: nowrap !important;
+    }
   }
