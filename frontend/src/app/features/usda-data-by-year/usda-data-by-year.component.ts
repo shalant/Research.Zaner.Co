@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Datum } from '../models/usdainfo.model';
 import { UsdaService } from '../services/usda.service';
 import { Chart } from 'chart.js/auto';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-usda-data-by-year',
@@ -139,7 +140,8 @@ export class UsdaDataByYearComponent {
         // this.newUsdaData$ = this.http.get<Datum[]>(`https://localhost:7281/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
         
         // PROD
-        this.newUsdaData$ = this.http.get<Datum[]>(`https://azuretest20240509141311.azurewebsites.net/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
+        // this.newUsdaData$ = this.http.get<Datum[]>(`https://azuretest20240509141311.azurewebsites.net/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
+        this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
 
       this.getUsdaSubscription = this.newUsdaData$
         .subscribe({
@@ -380,5 +382,5 @@ export class UsdaDataByYearComponent {
   ngOnDestroy(): void {
     this.getUsdaSubscription?.unsubscribe();
   }
-  
+
 }

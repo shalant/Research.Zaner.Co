@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./core/components/navbar/navbar.component";
 import { HeaderComponent } from "./core/components/header/header.component";
@@ -6,6 +6,7 @@ import { DarkToggleComponent } from "./core/components/dark-toggle/dark-toggle.c
 import { SidebarComponent } from "./core/components/sidebar/sidebar.component";
 import { faBars, faChartLine, faFlagUsa, faGear, faGlobe, faUser, faWheatAwn } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { environment } from '../environments/environment.development';
 
 @Component({
     selector: 'app-root',
@@ -23,7 +24,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         FontAwesomeModule
     ]
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'frontend';
 
   faWheatAwn = faWheatAwn;
@@ -33,4 +34,14 @@ export class AppComponent {
   faGear = faGear;
   faUser = faUser;
   faBars = faBars;
+
+  ngOnInit() {
+    if (environment.production) {
+      console.log("We are running in production mode");
+      console.log(`API Key: ${environment.backendUrl}`);
+    } else {
+      console.log("We are running in development mode");
+      console.log(`API Key: ${environment.backendUrl}`);
+    }
+  }
 }
