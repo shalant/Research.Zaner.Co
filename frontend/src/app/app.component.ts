@@ -38,10 +38,8 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     if (environment.production) {
       console.log("We are running in production mode");
-      console.log(`API Key: ${environment.backendUrl}`);
     } else {
       console.log("We are running in development mode");
-      console.log(`API Key: ${environment.backendUrl}`);
     }
   }
 }

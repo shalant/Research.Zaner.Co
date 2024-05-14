@@ -12,12 +12,15 @@
 <!-- <div class="container"> -->
 <!-- <div class="row"> -->
 <!-- <div class="d-flex flex-row"> -->
-<div class="content-header justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
-  <div class="row pt-3" >
-    <h1 class="h2 col-sm" *ngIf="newUsdaData$">{{selectedShortDesc}}</h1>
-    <h2 class="h2 col-sm mb-2 pb-2" *ngIf="!newUsdaData$">Usda</h2>
+<h2 class="d-flex justify-content-center mt-3" *ngIf="newUsdaData$">{{selectedShortDesc}}</h2>
+<h2 class="d-flex justify-content-center mt-3" *ngIf="!newUsdaData$">USDA Data</h2>
 
-  </div>
+<div class="content-header justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
+  <!-- <div class="row pt-3 mx-auto" >
+    <h1 class="h2 " *ngIf="newUsdaData$">{{selectedShortDesc}}</h1>
+    <h2 class="h2 mb-2 pb-2 " *ngIf="!newUsdaData$">Usda</h2>
+
+  </div> -->
   <div class="row">
     
 
@@ -66,27 +69,88 @@
         </select> -->
         <select class="col-sm form-select me-1" (change)="onSelectChart($event)">
           <option selected>Chart Type</option>
-          <option value="bar">Bar</option>
-          <option value="line">Line</option>
+          <option value="barchart">Bar</option>
+          <option value="linechart">Line</option>
         </select>
         <div class="col-auto">
           <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 0)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString(), selectedShortDesc)">Go</button>
+            >Go</button>
           <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 1)"
             (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString(), selectedShortDesc)">Go</button>
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length > 1)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString().concat(',').concat(selectedItems[1].item_text.toString()), selectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 2)"
+            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[1].item_text.toString()), selectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 3)"
+            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[1].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[2].item_text.toString())), selectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 4)"
+            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[1].item_text.toString())
+              .concat(',')
+              .concat(selectedItems[2].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[3].item_text.toString())), selectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 5)"
+            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[1].item_text.toString())
+              .concat(',')
+              .concat(selectedItems[2].item_text.toString()
+              .concat(',')
+              .concat(selectedItems[3].item_text.toString())
+              .concat(',')
+              .concat(selectedItems[4].item_text.toString())), selectedShortDesc)">Go</button>
+
           <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
             <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
             Go...
           </button>
-          <!-- <button class="btn btn-secondary mx-md-1 mt-1" (click)="reload()">Refresh</button> -->
         </div>
       </div>
       <hr class="mt-4">
     </form>
   </div>
 </div>
+
+<div >
+  <canvas *ngIf="newUsdaData$ && this.selectedChart== 'barchart' " id="barchart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
+  <canvas *ngIf="newUsdaData$ && this.selectedChart== 'linechart' " id="linechart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
+
+</div>
+
+<ng-container *ngIf="newUsdaData$ | async as newUsdaData" >
+  <h2 class="pt-5">Data</h2>
+  <table class="table table-bordered ">
+    <thead>
+      <th>Time period</th>
+      <th>Value</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of newUsdaData">
+        <td>{{item.year}} {{item.reference_period_desc}}</td>
+        <td>{{item.value}}</td>
+        <td>
+          <a class="btn btn-primary">Edit</a>
+        </td>
+      </tr>
+    </tbody>
+    <button class="btn btn-success mt-3">Export to Excel</button>
+  </table>
+</ng-container>
+
+<!-- </div> -->
+<!-- </div> -->
+
 
 
   <!-- <div class="btn-toolbar mb-2 mb-md-0">
@@ -158,31 +222,3 @@
   </div>
   end row
 </ng-container> -->
-
-<div class="">
-  <canvas id="barchart"></canvas>
-</div>
-
-<ng-container *ngIf="newUsdaData$ | async as newUsdaData" >
-  <h2 class="pt-5">Data</h2>
-  <table class="table table-bordered ">
-    <thead>
-      <th>Time period</th>
-      <th>Value</th>
-      <th>Actions</th>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of newUsdaData">
-        <td>{{item.year}} {{item.reference_period_desc}}</td>
-        <td>{{item.value}}</td>
-        <td>
-          <a class="btn btn-primary">Edit</a>
-        </td>
-      </tr>
-    </tbody>
-    <button class="btn btn-success mt-3">Export to Excel</button>
-  </table>
-</ng-container>
-
-<!-- </div> -->
-<!-- </div> -->

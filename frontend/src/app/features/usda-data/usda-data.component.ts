@@ -28,16 +28,27 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     selectedCommodity: string = '';
     selectedYear: string = '';
     selectedShortDesc: string = '';
+    selectedChart: string = '';
   
     myChart: any = '';
     newChartData: any;
     period: any[] = [];
     value: number[] = [];
-    // value: bigint[] = [];
     unit: string = '';
     timeframe: string = '';
     xAxis: string[] = [];
-  
+    periodTwenty: any[] = [];
+    periodTwentyOne: any[] = [];
+    periodTwentyTwo: any[] = [];
+    periodTwentyThree: any[] = [];
+    periodTwentyFour: any[] = [];
+    valueTwenty: any[] = [];
+    valueTwentyOne: any[] = [];
+    valueTwentyTwo: any[] = [];
+    valueTwentyThree: any[] = [];
+    valueTwentyFour: any[] = [];
+    multiyearPeriod: any[] = [];
+    multiyearValue: any[] = [];
     tempDecimal: number = 1;
   
     getUsdaSubscription?: Subscription;
@@ -57,10 +68,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
         { item_id: 4, item_text: '2023' },
         { item_id: 5, item_text: '2024' }
       ];
-      this.selectedItems = [
-        // { item_id: 3, item_text: 'Pune' },
-        // { item_id: 4, item_text: 'Navsari' }
-      ];
+      this.selectedItems = [];
       this.dropdownSettings = {
         singleSelection: false,
         idField: 'item_id',
@@ -89,10 +97,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           .concat(this.selectedItems[i].item_text.toString())      
       }
       console.log(this.selectedYear)
-      // this.selectedYear
-      //   .concat(this.selectedItems[0].item_text.toString())
-      //   .concat(',')
-      //   .concat(this.selectedItems[1].item_text.toString())
+      
     }
 
     onSelectAll(items: any) {
@@ -110,7 +115,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     }
 
     onSelectChart(event: Event) {
-      this.selectedMetric = (event.target as HTMLSelectElement).value;
+      this.selectedChart = (event.target as HTMLSelectElement).value;
       
     }
 
@@ -182,12 +187,6 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
         default:
           break;
       }    
-      // if(!this.value) {
-      //   this.isLoading = true;
-      // }
-      // if(this.isLoading) {
-      //   document.getElementById("load-usda-button")?.classList.add("spinner-border")
-      // }
       debugger
       if(this.isLoading) {
         this.DisplaySpinner();
@@ -223,64 +222,198 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           .subscribe({
             next: (response) => {
               response.forEach(element => {
-                
-                switch(selectedMetric) {
-                  case 'AREA PLANTED':
+                if(this.selectedChart == 'barchart') {
+                  switch(selectedMetric) {
+                    case 'AREA PLANTED':
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        break;
+                    case 'AREA HARVESTED':
+                      
+                      if(element.domaincat_desc == 'NOT SPECIFIED' 
+                        && element.statisticcat_desc == 'AREA PLANTED') {
+                        // && (element.short_desc == 'CORN - ACRES HARVESTED' 
+                        //   || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      break;
+                    case 'CONDITION':
+                      if(selectedCommodity = 'CORN') {
+                        this.selectedShortDesc = 'CORN - CONDITION, MEASURED IN PCT EXCELLENT'
+                      }
+                      else {
+                        this.selectedShortDesc = 'SOYBEANS - CONDITION, MEASURED IN PCT EXCELLENT'
+                      }
                       this.period.push(element.year + ' ' + element.reference_period_desc)
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                       break;
-                  case 'AREA HARVESTED':
-                    
-                    if(element.domaincat_desc == 'NOT SPECIFIED' 
-                      && element.statisticcat_desc == 'AREA PLANTED') {
-                      // && (element.short_desc == 'CORN - ACRES HARVESTED' 
-                      //   || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                    case 'ETHANOL USAGE':
+                      if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
+                        && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)') {
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      break;
+                    case 'PRODUCTION':
+                      if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
                       this.period.push(element.year + ' ' + element.reference_period_desc)
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                     }
-                    break;
-                  case 'CONDITION':
-                    if(selectedCommodity = 'CORN') {
-                      this.selectedShortDesc = 'CORN - CONDITION, MEASURED IN PCT EXCELLENT'
-                    }
-                    else {
-                      this.selectedShortDesc = 'SOYBEANS - CONDITION, MEASURED IN PCT EXCELLENT'
-                    }
-                    this.period.push(element.year + ' ' + element.reference_period_desc)
-                    this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
-                    break;
-                  case 'ETHANOL USAGE':
-                    if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
-                      && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)') {
+                      break;
+                    case 'PROGRESS':
+                      if(element.domaincat_desc == 'NOT SPECIFIED') {
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      break;
+                    case 'RESIDUAL USAGE':
                       this.period.push(element.year + ' ' + element.reference_period_desc)
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
-                    }
-                    break;
-                  case 'PRODUCTION':
-                    if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
-                    this.period.push(element.year + ' ' + element.reference_period_desc)
-                    this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      break;
+                    case 'STOCKS':
+                      if(element.domaincat_desc == 'NOT SPECIFIED') {
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      break;
+                    default:
+                      console.log('Bad query')
+                      break;
                   }
-                    break;
-                  case 'PROGRESS':
-                    if(element.domaincat_desc == 'NOT SPECIFIED') {
+                }
+                else {
+                  debugger
+                  switch(selectedMetric) {
+                    case 'AREA PLANTED':
+                      if(element.year == 2020) {
+                        // this.periodTwenty.push(element.year + ' ' + element.reference_period_desc)
+                        debugger
+                        this.periodTwenty.push(element.reference_period_desc)
+                        this.valueTwenty.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else if(element.year == 2021) {
+                        // this.periodTwentyOne.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyOne.push(element.reference_period_desc)
+                        this.valueTwentyOne.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else if(element.year == 2022) {
+                        // this.periodTwentyTwo.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyTwo.push(element.reference_period_desc)
+                        this.valueTwentyTwo.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else if(element.year == 2023) {
+                        // this.periodTwentyThree.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyThree.push(element.reference_period_desc)
+                        this.valueTwentyThree.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else {
+                        // this.periodTwentyFour.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyThree.push(element.reference_period_desc)
+                        this.valueTwentyFour.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                        break;
+                    case 'AREA HARVESTED':
+                      if(element.domaincat_desc == 'NOT SPECIFIED' 
+                        && element.statisticcat_desc == 'AREA HARVESTED'
+                        && (element.short_desc == 'CORN, GRAIN - ACRES HARVESTED' 
+                          || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      break;
+                    case 'CONDITION':
+                      if(selectedCommodity = 'CORN') {
+                        this.selectedShortDesc = 'CORN - CONDITION, MEASURED IN PCT EXCELLENT'
+                      }
+                      else {
+                        this.selectedShortDesc = 'SOYBEANS - CONDITION, MEASURED IN PCT EXCELLENT'
+                      }
+                      this.period.push(element.year + ' ' + element.reference_period_desc)
+                      this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      break;
+                    case 'ETHANOL USAGE':
+                      if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
+                        && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)'
+                        && element.reference_period_desc !== 'YEAR') {
+                      if(element.year == 2020) {
+                        // this.periodTwenty.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwenty.push(element.reference_period_desc)
+                        this.valueTwenty.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else if(element.year == 2021) {
+                        // this.periodTwentyOne.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyOne.push(element.reference_period_desc)
+                        this.valueTwentyOne.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else if(element.year == 2022) {
+                        // this.periodTwentyTwo.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyTwo.push(element.reference_period_desc)
+                        this.valueTwentyTwo.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else if(element.year == 2023) {
+                        // this.periodTwentyThree.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyThree.push(element.reference_period_desc)
+                        this.valueTwentyThree.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      else {
+                        // this.periodTwentyFour.push(element.year + ' ' + element.reference_period_desc)
+                        this.periodTwentyThree.push(element.reference_period_desc)
+                        this.valueTwentyFour.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                    }
+                      break;
+                    case 'PRODUCTION':
+                      if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
                       this.period.push(element.year + ' ' + element.reference_period_desc)
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                     }
-                    break;
-                  case 'RESIDUAL USAGE':
-                    this.period.push(element.year + ' ' + element.reference_period_desc)
-                    this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
-                    break;
-                  case 'STOCKS':
-                    if(element.domaincat_desc == 'NOT SPECIFIED') {
+                      break;
+                    case 'PROGRESS':
+                      if(element.domaincat_desc == 'NOT SPECIFIED') {
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                      break;
+                    case 'RESIDUAL USAGE':
                       this.period.push(element.year + ' ' + element.reference_period_desc)
                       this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
-                    }
-                    break;
-                  default:
-                    console.log('Bad query')
-                    break;
+                      break;
+                    case 'STOCKS':
+                      if(element.domaincat_desc == 'NOT SPECIFIED') {
+                        // this.period.push(element.year + ' ' + element.reference_period_desc)
+                        // this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        if(element.year == 2020) {
+                          // this.periodTwenty.push(element.year + ' ' + element.reference_period_desc)
+                          this.periodTwenty.push(element.reference_period_desc)
+                          this.valueTwenty.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        else if(element.year == 2021) {
+                          // this.periodTwentyOne.push(element.year + ' ' + element.reference_period_desc)
+                          this.periodTwentyOne.push(element.reference_period_desc)
+                          this.valueTwentyOne.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        else if(element.year == 2022) {
+                          // this.periodTwentyTwo.push(element.year + ' ' + element.reference_period_desc)
+                          this.periodTwentyTwo.push(element.reference_period_desc)
+                          this.valueTwentyTwo.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        else if(element.year == 2023) {
+                          // this.periodTwentyThree.push(element.year + ' ' + element.reference_period_desc)
+                          this.periodTwentyThree.push(element.reference_period_desc)
+                          this.valueTwentyThree.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        else {
+                          // this.periodTwentyFour.push(element.year + ' ' + element.reference_period_desc)
+                          this.periodTwentyThree.push(element.reference_period_desc)
+                          this.valueTwentyFour.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                      }
+                      break;
+                    default:
+                      console.log('Bad query')
+                      break;
+                  }
                 }
                 // this.newRealData.push(parseInt(element.value))
                 this.unit = response[0].unit_desc;
@@ -288,14 +421,34 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
               
               console.log('x axis: ' + this.period)
               console.log('y axis: ' + this.value)
-              this.RenderChart(this.period, this.value, 'bar', 'barchart');
+              if(this.selectedChart == 'barchart') {
+                this.RenderChart(this.period, this.value, 'bar', 'barchart');
+              }
+              else {
+                var newPeriods = [this.periodTwenty, this.periodTwentyOne, this.periodTwentyTwo, this.periodTwentyThree, this.periodTwentyFour]
+                this.multiyearPeriod.push(...newPeriods);
+                var newValues = [this.valueTwenty, this.valueTwentyOne, this.valueTwentyTwo, this.valueTwentyThree, this.valueTwentyFour]
+                this.multiyearValue.push(...newValues);
+                console.log('x axis: ' + this.multiyearPeriod)
+                console.log('y axis: ' + this.multiyearValue)
+                console.log('labeldata[2]:' +  this.periodTwenty[2])
+                debugger
+                this.periodTwenty.slice(0,62);
+                this.valueTwenty.slice(0,30);
+                console.log(this.periodTwenty)
+                console.log(this.valueTwenty)
+                // this.RenderLineChart(this.multiyearPeriod, this.multiyearValue, 'line', 'linechart');
+                this.RenderLineChart(this.periodTwenty, this.valueTwenty, 'line', 'linechart');
+              }
             }
           })
       }
     }
   
     RenderChart(labelData: any[], mainData: any[], type: any, id: any) {
-      this.myChart = new Chart('barchart', {
+      // this.myChart = new Chart('barchart', {
+      this.myChart = new Chart(this.selectedChart, {
+
         type: type,
         data: {
           labels: labelData,
@@ -313,24 +466,65 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           scales: {
             y: {
               beginAtZero: true,
-              // ticks: {
-              //   stepSize: 1,          
-              //   suggestedMin: 'min-int-value',      
-              //   suggestedMax: 'max-int-value'       
-              // }
             }
           },
-          // plugins: {
-          //   title: {
-          //     display: true,
-          //     text: this.selectedShortDesc,
-          //     font: {
-          //       size: 25,
-          //       family: "Roboto",
-          //     },
-          //     align: 'center'
-          //   }
-          // },
+        }
+      });
+      this.isLoading = false;
+      this.RemoveSpinner();
+    }
+
+    RenderLineChart(labelData: any[], mainData: any[], type: any, id: any) {
+      this.myChart = new Chart(this.selectedChart, {
+        type: type,
+        data: {
+          labels: labelData[2],
+          datasets: [
+            {
+              label: '2020',
+              data: mainData[0],
+              backgroundColor: 'red',
+              borderColor: ['red'],
+              borderWidth: 1
+            },
+            {
+              label: '2021',
+              data: mainData[1],
+              backgroundColor: 'blue',
+              borderColor: ['blue'],
+              borderWidth: 1
+            },
+            {
+              label: '2022',
+              data: mainData[2],
+              backgroundColor: '#6B911B',
+              borderColor: ['#6B911B'],
+              borderWidth: 1
+            },
+            {
+              label: '2023',
+              data: mainData[3],
+              backgroundColor: 'pink',
+              borderColor: ['pink'],
+              borderWidth: 1
+            },
+            {
+              label: '2024',
+              data: mainData[4],
+              backgroundColor: 'orange',
+              borderColor: ['orange'],
+              borderWidth: 1
+              }
+          ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: false,
+            }
+          },
+          plugins: {
+          },
         }
       });
       this.isLoading = false;
@@ -347,7 +541,6 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
 
     reload(){
       window.location.reload();
-      // any other execution
       this.ngOnInit()
       this.myChart.destroy();
       this.value = [];

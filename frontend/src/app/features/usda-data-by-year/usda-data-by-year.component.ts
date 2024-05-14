@@ -173,7 +173,7 @@ export class UsdaDataByYearComponent {
                   }
                   else {
                     // this.periodTwentyFour.push(element.year + ' ' + element.reference_period_desc)
-                    this.periodTwentyThree.push(element.reference_period_desc)
+                    this.periodTwentyFour.push(element.reference_period_desc)
                     this.valueTwentyFour.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                   }
                     break;
@@ -222,7 +222,7 @@ export class UsdaDataByYearComponent {
                   }
                   else {
                     // this.periodTwentyFour.push(element.year + ' ' + element.reference_period_desc)
-                    this.periodTwentyThree.push(element.reference_period_desc)
+                    this.periodTwentyFour.push(element.reference_period_desc)
                     this.valueTwentyFour.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                   }
                 }
@@ -269,7 +269,7 @@ export class UsdaDataByYearComponent {
                     }
                     else {
                       // this.periodTwentyFour.push(element.year + ' ' + element.reference_period_desc)
-                      this.periodTwentyThree.push(element.reference_period_desc)
+                      this.periodTwentyFour.push(element.reference_period_desc)
                       this.valueTwentyFour.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                     }
                   }
@@ -281,9 +281,11 @@ export class UsdaDataByYearComponent {
               this.unit = response[0].unit_desc;
             });
             debugger
-            var newPeriods = [this.periodTwenty, this.periodTwentyOne, this.periodTwentyTwo, this.periodTwentyThree, this.periodTwentyFour]
+            // var newPeriods = [this.periodTwenty, this.periodTwentyOne, this.periodTwentyTwo, this.periodTwentyThree, this.periodTwentyFour]
+            var newPeriods = this.periodTwenty
             this.multiyearPeriod.push(...newPeriods);
-            var newValues = [this.valueTwenty, this.valueTwentyOne, this.valueTwentyTwo, this.valueTwentyThree, this.valueTwentyFour]
+            // var newValues = [this.valueTwenty, this.valueTwentyOne, this.valueTwentyTwo, this.valueTwentyThree, this.valueTwentyFour]
+            var newValues = this.valueTwenty
             this.multiyearValue.push(...newValues);
             console.log('x axis: ' + this.period)
             console.log('y axis: ' + this.value)
@@ -344,15 +346,6 @@ export class UsdaDataByYearComponent {
           }
         },
         plugins: {
-          title: {
-            display: true,
-            text: this.selectedShortDesc,
-            font: {
-              size: 25,
-              family: "Roboto",
-            },
-            align: 'center'
-          }
         },
       }
     });
@@ -370,7 +363,6 @@ export class UsdaDataByYearComponent {
 
   reload() {
     window.location.reload();
-    // any other execution
     this.ngOnInit()
     this.myChart.destroy();
     this.value = [];
