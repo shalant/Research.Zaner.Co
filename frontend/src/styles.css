@@ -38,7 +38,6 @@
   .sidebar-sticky {
     height: calc(100vh - 48px);
     max-height:max-content;
-
     overflow-y: auto;
   }
   
@@ -70,6 +69,12 @@
   @media (min-width: 768px) {
     .bd-placeholder-img-lg {
       font-size: 3.5rem;
+    }
+  }
+
+  @media (max-width: 767.5px) {
+    .sidebar-sticky {
+      height: 250px;
     }
   }
 
@@ -150,5 +155,13 @@
   @media (min-width: 768px) {
     .flex-md-wrap {
       flex-wrap: nowrap !important;
+    }
+
+    .content-header {
+      flex-direction: row;
+    }
+
+    .btn-toolbar {
+      flex-direction: row;
     }
   }

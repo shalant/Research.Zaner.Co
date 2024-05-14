@@ -22,14 +22,15 @@
         </select>
       </div>
       <div class="mx-1">
-        <select class="form-select multiple mt-4" aria-label="Default select example" (change)="onSelectYear($event)">
+        <select class="form-select  mt-4" multiple aria-label="Default select example" (change)="onSelectYear($event)">
           <option selected>Years</option>
-          <!-- <option value="2024">2024</option>
+            <option value="2024">2024</option>
             <option value="2023">2023</option>
             <option value="2022">2022</option>
-            <option value="2021">2021</option> -->
-          <option value="2020">2020</option>
+            <option value="2021">2021</option>
+            <option value="2020">2020</option>
         </select>
+        
       </div>
       <div class="mt-4 ">
         <button class="btn btn-primary mx-1" *ngIf="!isLoading"
@@ -38,7 +39,7 @@
           <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
           Go...
         </button>
-        <button class="btn btn-secondary mx-1" (click)="reload()">Refresh</button>
+        <!-- <button class="btn btn-secondary mx-1" (click)="reload()">Refresh</button> -->
       </div>
     </div>
 

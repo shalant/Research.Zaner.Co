@@ -11,30 +11,25 @@
 <div class="container-fluid">
   <div class="row">
     <!-- <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"> -->
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light collapse">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light collapse border border-right">
 
       <div class="sidebar-sticky pt-3">
-        <ul class="nav flex-column">
+        <ul class="navbar-nav flex-column">
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/usda-data']">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark" aria-current="page" [routerLink]="['/usda-data']">
               <fa-icon [icon]="faWheatAwn"></fa-icon>
               <span>USDA Data</span>
             </a>
           </li>
+          
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/usda-data-by-year']">
-              <fa-icon [icon]="faChartLine"></fa-icon>
-              <span>USDA Data By Year</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/usa-map']">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark" [routerLink]="['/usa-map']">
               <fa-icon [icon]="faFlagUsa"></fa-icon>
               <span>USA Map</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 text-dark" [routerLink]="['/world-map']">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark" [routerLink]="['/world-map']">
               <fa-icon [icon]="faGlobe"></fa-icon>
               <span>World Map</span>
             </a>
@@ -44,13 +39,13 @@
 
         <ul class="nav flex-column mb-auto"> -->
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 text-dark" href="#">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark" href="#">
               <fa-icon [icon]="faGear"></fa-icon>
               <span class="">Settings</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link d-flex align-items-center gap-2 text-dark" href="#">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark" href="#">
               <fa-icon [icon]="faUser"></fa-icon>
               <span>Sign out</span>
             </a>

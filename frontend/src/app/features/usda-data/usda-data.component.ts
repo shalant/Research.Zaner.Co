@@ -7,11 +7,13 @@ import { Chart, registerables } from 'chart.js/auto';
 import { UsdaService } from '../services/usda.service';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-usda-data',
   standalone: true,
-  imports: [CommonModule,RouterOutlet, RouterModule],
+  imports: [CommonModule,RouterOutlet, RouterModule, NgMultiSelectDropDownModule, FormsModule],
   templateUrl: './usda-data.component.html',
   styleUrl: './usda-data.component.css'
 })
@@ -40,11 +42,63 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
   
     getUsdaSubscription?: Subscription;
   
+    dropdownList: any[] = [];
+    selectedItems: any[] = [];
+    dropdownSettings: IDropdownSettings = {};
+    
     constructor(private usdaService: UsdaService,
       private http: HttpClient) { }
   
-    ngOnInit(): void { }
+    ngOnInit() {
+      this.dropdownList = [
+        { item_id: 1, item_text: '2020' },
+        { item_id: 2, item_text: '2021' },
+        { item_id: 3, item_text: '2022' },
+        { item_id: 4, item_text: '2023' },
+        { item_id: 5, item_text: '2024' }
+      ];
+      this.selectedItems = [
+        // { item_id: 3, item_text: 'Pune' },
+        // { item_id: 4, item_text: 'Navsari' }
+      ];
+      this.dropdownSettings = {
+        singleSelection: false,
+        idField: 'item_id',
+        textField: 'item_text',
+        selectAllText: 'Select All',
+        unSelectAllText: 'UnSelect All',
+        itemsShowLimit: 3,
+        allowSearchFilter: true
+      };
+     }
   
+    onItemSelect(item: any) {
+      this.selectedItems.push(item);
+      //ADD IF STATEMENT AND LOOP FOR MULTIPLES
+      console.log(item);
+      console.log(this.selectedItems[0].item_text)
+      // console.log(this.selectedItems[1].item_text)
+      // console.log(this.selectedYear
+      //   .concat(this.selectedItems[0].item_text.toString())
+      //   .concat(',')
+      //   .concat(this.selectedItems[1].item_text.toString())
+      // )
+
+      for (let i = 0; i < this.selectedItems.length; i++) {
+        this.selectedYear
+          .concat(this.selectedItems[i].item_text.toString())      
+      }
+      console.log(this.selectedYear)
+      // this.selectedYear
+      //   .concat(this.selectedItems[0].item_text.toString())
+      //   .concat(',')
+      //   .concat(this.selectedItems[1].item_text.toString())
+    }
+
+    onSelectAll(items: any) {
+      console.log(items);
+    }
+
     onSelectCommodity(event: Event) {
       debugger
       this.selectedCommodity = (event.target as HTMLSelectElement).value;
@@ -52,59 +106,33 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
   
     onSelectMetric(event: Event) {
       this.selectedMetric = (event.target as HTMLSelectElement).value;
-      // switch (this.selectedMetric) {
-      //   case 'AREA PLANTED':
-      //     if (this.selectedCommodity == 'CORN') {
-      //       this.selectedShortDesc = `CORN - ACRES PLANTED`;
-      //     }
-      //     else {
-      //       this.selectedShortDesc = `SOYBEANS - ACRES PLANTED`;
-      //     }
-      //     console.log('selected commodity:' + this.selectedCommodity)
-      //     break;
-      //   case 'AREA HARVESTED':
-      //     this.selectedShortDesc = `${this.selectedCommodity} - ACRES HARVESTED`;
-      //     break;
-      //   case 'CONDITION':
-      //     debugger
-      //     this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, MEASURED IN PCT EXCELLENT`;
-      //     break;
-      //   case 'ETHANOL USAGE':
-      //     this.selectedShortDesc = `CORN, FOR FUEL ALCOHOL - USAGE, MEASURED IN BU`;
-      //     break;
-      //   case 'PRODUCTION':
-      //     if (this.selectedCommodity == 'CORN') {
-      //       this.selectedShortDesc = `CORN, GRAIN - PRODUCTION, MEASURED IN BU`;
-      //     }
-      //     else {
-      //       this.selectedShortDesc = `SOYBEANS - PRODUCTION, MEASURED IN BU`;
-      //     }
-      //     break;
-      //   case 'PROGRESS':
-      //     this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, MEASURED IN PCT EMERGED`;
-      //     break;
-      //   case 'RESIDUAL USAGE':
-      //     this.selectedShortDesc = `CORN, FOR OTHER PRODUCTS (EXCL ALCOHOL) - USAGE, MEASURED IN BU`;
-      //     break;
-      //   case 'STOCKS':
-      //     debugger
-      //     if (this.selectedCommodity == 'CORN') {
-      //       this.selectedShortDesc = `CORN, GRAIN - STOCKS, MEASURED IN BU`;
-      //     }
-      //     else {
-      //       this.selectedShortDesc = 'SOYBEANS - STOCKS, MEASURED IN BU';
-      //     }
-      //     break;
-      //   default:
-      //     break;
-      // }
+      
     }
+
+    onSelectChart(event: Event) {
+      this.selectedMetric = (event.target as HTMLSelectElement).value;
+      
+    }
+
+    setSelectedYear() {
+      this.selectedYear.concat(this.selectedItems[0].item_text.toString())
+      // .concat(',')  
+      // .concat(this.selectedItems[1].item_text.toString());
+    }
+
+
   
-    onSelectYear(event: Event) {
-      this.selectedYear = (event.target as HTMLSelectElement).value;
-    }
+    // onSelectYear(event: Event) {
+    //   debugger
+    //   this.selectedYear = (event.target as HTMLSelectElement).value;
+      // this.selectedYear = this.selectedItems[0].toString();
+    // }
   
     loadDataWithParams(selectedMetric: string, selectedCommodity: string, selectedYear: string, selectedShortDesc: string): void {
+      // this.onSelectYear(this.selectedItems[0].toString());
+      // this.selectedYear = this.selectedItems[0].item_text.toString();
+      this.setSelectedYear();
+      console.log(selectedYear)
       this.isLoading = true;
 
       debugger
@@ -187,6 +215,8 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
         
         // PROD
         // this.newUsdaData$ = this.http.get<Datum[]>(`https://azuretest20240509141311.azurewebsites.net/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
+        this.setSelectedYear();
+        // this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
         this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
 
         this.getUsdaSubscription = this.newUsdaData$
@@ -331,3 +361,52 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
   }
   
 
+
+
+  // OLD code from onSelectMetric
+  // switch (this.selectedMetric) {
+      //   case 'AREA PLANTED':
+      //     if (this.selectedCommodity == 'CORN') {
+      //       this.selectedShortDesc = `CORN - ACRES PLANTED`;
+      //     }
+      //     else {
+      //       this.selectedShortDesc = `SOYBEANS - ACRES PLANTED`;
+      //     }
+      //     console.log('selected commodity:' + this.selectedCommodity)
+      //     break;
+      //   case 'AREA HARVESTED':
+      //     this.selectedShortDesc = `${this.selectedCommodity} - ACRES HARVESTED`;
+      //     break;
+      //   case 'CONDITION':
+      //     debugger
+      //     this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, MEASURED IN PCT EXCELLENT`;
+      //     break;
+      //   case 'ETHANOL USAGE':
+      //     this.selectedShortDesc = `CORN, FOR FUEL ALCOHOL - USAGE, MEASURED IN BU`;
+      //     break;
+      //   case 'PRODUCTION':
+      //     if (this.selectedCommodity == 'CORN') {
+      //       this.selectedShortDesc = `CORN, GRAIN - PRODUCTION, MEASURED IN BU`;
+      //     }
+      //     else {
+      //       this.selectedShortDesc = `SOYBEANS - PRODUCTION, MEASURED IN BU`;
+      //     }
+      //     break;
+      //   case 'PROGRESS':
+      //     this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, MEASURED IN PCT EMERGED`;
+      //     break;
+      //   case 'RESIDUAL USAGE':
+      //     this.selectedShortDesc = `CORN, FOR OTHER PRODUCTS (EXCL ALCOHOL) - USAGE, MEASURED IN BU`;
+      //     break;
+      //   case 'STOCKS':
+      //     debugger
+      //     if (this.selectedCommodity == 'CORN') {
+      //       this.selectedShortDesc = `CORN, GRAIN - STOCKS, MEASURED IN BU`;
+      //     }
+      //     else {
+      //       this.selectedShortDesc = 'SOYBEANS - STOCKS, MEASURED IN BU';
+      //     }
+      //     break;
+      //   default:
+      //     break;
+      // }
