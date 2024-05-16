@@ -141,7 +141,7 @@ export class UsdaDataByYearComponent {
         
         // PROD
         // this.newUsdaData$ = this.http.get<Datum[]>(`https://azuretest20240509141311.azurewebsites.net/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
-        this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
+        this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactoredMultiyear?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
 
       this.getUsdaSubscription = this.newUsdaData$
         .subscribe({

@@ -169,9 +169,14 @@
   .watermark {
     background-image: url('./assets/images/zaner-logo.png');
     background-repeat: no-repeat;
-    background-position:top;
+    background-position: 50% 30%;
     color: blue;
     background-size: 200px;
   }
 
-  
+  .custom-form-select {
+    max-height: 40px;
+  }
+
+  .multi-dropdown {
+  }
