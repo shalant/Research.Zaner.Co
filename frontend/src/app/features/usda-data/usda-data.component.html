@@ -59,6 +59,7 @@
           <option  value="PRODUCTION">Production</option>
           <option *ngIf="selectedCommodity != 'CATTLE' 
             && selectedCommodity !== 'COTTON'
+            && selectedCommodity !== 'CANOLA'
             && selectedCommodity !== 'HOGS'
             && selectedCommodity !== 'WHEAT'"
             value="PROGRESS">Progress - Emerged</option>
@@ -77,14 +78,7 @@
         <!-- [(ngModel)]="selectedItems" -->
         <!-- (change) = "onSelectYear($event)" -->
         </ng-multiselect-dropdown>
-        <!-- <select multiple class="col-sm form-select" (change)="onSelectYear($event)">
-          <option selected>Years</option>
-          <option value=2024>2024</option>
-          <option value=2023>2023</option>
-          <option value=2022>2022</option>
-          <option value=2021>2021</option>
-          <option value=2020>2020</option>
-        </select> -->
+        
         <select class="col-sm form-select me-1 custom-form-select" (change)="onSelectChart($event)">
           <option selected disabled>Chart Type</option>
           <option value="barchart">Bar</option>
@@ -127,30 +121,142 @@
               .concat(selectedItems[3].item_text.toString())
               .concat(',')
               .concat(selectedItems[4].item_text.toString())), selectedShortDesc)">Go</button>
+          <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
+            <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+            Go...
+          </button>
+          <button class="btn btn-secondary" (click)="addSecondQueryMenu()">
+            <fa-icon [icon]="faPlus" *ngIf="!hasSecondQuery"></fa-icon>
+            <fa-icon [icon]="faMinus" *ngIf="hasSecondQuery"></fa-icon>
+          </button>
+        </div>
+      </div>
+      <hr class="mt-4">
+      
+      <!-- optional second row -->
+      <div *ngIf="hasSecondQuery" class="row g-1 mx-2 second-query" id="second-query-container">
+        <h5>Add a second query</h5>
+        <select class="col-sm form-select me-1 custom-form-select" (change)="onSelectCommodity2($event)">
+          <option selected disabled>Commodity</option>
+          <option value="CORN">Corn</option>
+          <option value="SOYBEANS">Soybeans</option>
+          <option value="WHEAT">Wheat</option>
+          <option value="CATTLE">Cattle</option>
+          <option value="HOGS">Hogs</option>
+          <option value="SORGHUM">Sorghum</option>
+          <option value="BARLEY">Barley</option>
+          <option value="OATS">Oats</option>
+          <option value="COTTON">Cotton</option>
+          <option value="RICE">Rice</option>
+          <option value="CANOLA">Canola</option>
+          <option value="COFFEE">Coffee</option>
+
+        </select>
+        <select class="col-sm form-select me-1 custom-form-select" (change)="onSelectMetric2($event)">
+          <option selected disabled>Metric</option>
+          <option *ngIf="secondSelectedCommodity != 'CATTLE' && secondSelectedCommodity !== 'HOGS'" value="AREA PLANTED">Acres Planted</option>
+          <option *ngIf="secondSelectedCommodity != 'CATTLE' && secondSelectedCommodity !== 'HOGS'" value="AREA HARVESTED">Acres Harvested</option>
+          <option *ngIf="secondSelectedCommodity != 'CATTLE' 
+            && secondSelectedCommodity !== 'HOGS'
+            && secondSelectedCommodity !== 'WHEAT'" value="CONDITION">Condition (excellent)</option>
+          <option *ngIf="secondSelectedCommodity == 'CORN' " value="ETHANOL USAGE">Ethanol Usage</option>
+          <option  value="PRODUCTION">Production</option>
+          <option *ngIf="secondSelectedCommodity != 'CATTLE' 
+            && secondSelectedCommodity !== 'COTTON'
+            && secondSelectedCommodity !== 'CANOLA'
+            && secondSelectedCommodity !== 'HOGS'
+            && secondSelectedCommodity !== 'WHEAT'"
+            value="PROGRESS">Progress - Emerged</option>
+          <option *ngIf="secondSelectedCommodity == 'CORN'" value="RESIDUAL USAGE">Residual Usage</option>
+          <option  value="STOCKS">Stocks</option>
+        </select>
+        <ng-multiselect-dropdown class="col-sm me-1 multi-dropdown"
+          [placeholder]="'Year'"
+          [settings]="dropdownSettings"
+          [data]="dropdownList2"
+          (onSelect)="onItemSelect2($event)"
+          (onSelectAll)="onSelectAll2($event)"
+          (onDeSelect)="onDeselect2($event)"
+          (onDeSelectAll)="onDeselectAll2($event)"
+        >
+        </ng-multiselect-dropdown>
+        
+        <select class="col-sm form-select me-1 custom-form-select" (change)="onSelectChart2($event)">
+          <option selected disabled>Chart Type</option>
+          <option value="barchart">Bar</option>
+          <option value="linechart">Line</option>
+        </select>
+
+        <div class="col-auto ">
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 0)"
+            >Go</button>
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 1)"
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString(), secondSelectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 2)"
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[1].item_text.toString()), secondSelectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 3)"
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[1].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[2].item_text.toString())), secondSelectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 4)"
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[1].item_text.toString())
+              .concat(',')
+              .concat(secondSelectedItems[2].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[3].item_text.toString())), secondSelectedShortDesc)">Go</button>
+          
+          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 5)"
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[1].item_text.toString())
+              .concat(',')
+              .concat(secondSelectedItems[2].item_text.toString()
+              .concat(',')
+              .concat(secondSelectedItems[3].item_text.toString())
+              .concat(',')
+              .concat(secondSelectedItems[4].item_text.toString())), secondSelectedShortDesc)">Go</button>
 
           <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
             <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
             Go...
           </button>
-          <button class="btn btn-secondary" >
-            <fa-icon [icon]="faPlus"></fa-icon>
+          <button class="btn btn-secondary"  (click)="closeSecondQueryMenu()">
+            <fa-icon [icon]="faXmark"></fa-icon>
 
           </button>
+
         </div>
+        <hr class="mt-4">
       </div>
-      <hr class="mt-4">
+
     </form>
   </div>
 </div>
 
 <div>
-  <canvas *ngIf="newUsdaData$ && this.selectedChart== 'barchart' " id="barchart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
-  <canvas *ngIf="newUsdaData$ && this.selectedChart== 'linechart' " id="linechart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
+  <canvas *ngIf="newUsdaData$ && this.selectedChart== 'barchart' && !isError" id="barchart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
+  <canvas *ngIf="newUsdaData$ && this.selectedChart== 'linechart' && !isError" id="linechart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
 
 </div>
 <ng-container *ngIf="isError">
-  <p>There was an error</p>
-  <button class="btn btn-secondary" (click)="reload()">Refresh</button>
+  <div class="col-md-12 text-center">
+    <h1>{{errorCode}}</h1>
+    <h2>Page Not Found</h2>
+    <p>
+        The data for this query is not available
+    </p>
+    <button class="btn btn-secondary" (click)="reload()">Refresh</button>
+
+  </div>
 </ng-container>
 
 <ng-container *ngIf="newUsdaData$ | async as newUsdaData" >

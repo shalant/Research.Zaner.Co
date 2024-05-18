@@ -180,3 +180,11 @@
 
   .multi-dropdown {
   }
+
+  .second-query {
+    /* display: none; */
+  }
+
+  .second-query-open {
+    display: flex;
+  }
