@@ -29,7 +29,7 @@ let FakeDataSet: any[] = [88000000, 91123456, 90654321, 87789789,90641000]
 // ]
 
 @Component({
-  selector: 'app-usda-data',
+  selector: 'old-app-usda-data',
   standalone: true,
   imports: [
     CommonModule,
@@ -39,11 +39,11 @@ let FakeDataSet: any[] = [88000000, 91123456, 90654321, 87789789,90641000]
     FormsModule,
     FontAwesomeModule
   ],
-  templateUrl: './usda-data.component.html',
+  template: ``,
   styleUrl: './usda-data.component.css'
 })
 
-export class UsdaDataComponent implements OnInit, OnDestroy {
+export class OldUsdaDataComponent implements OnInit, OnDestroy {
 
     faPlus = faPlus;
     faMinus = faMinus;

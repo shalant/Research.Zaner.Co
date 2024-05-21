@@ -1,34 +1,9 @@
-<!-- <div class="container" *ngIf="!isValidQuery">
-    <h3>Query is not applicable</h3>
-    <a [routerLink]="['/']" class="btn btn-secondary" (click)="reload">Back</a>
-</div> -->
-
-<!-- <div class="container" *ngIf="isValidQuery"> -->
-<!-- <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"> -->
-<!-- <div class="d-flex flex-row mt-2"> -->
-<!-- <div class="row mt-3" > -->
-
-
-<!-- <div class="container"> -->
-<!-- <div class="row"> -->
-<!-- <div class="d-flex flex-row"> -->
-<h2 class="d-flex justify-content-center mt-3" *ngIf="newUsdaData$">{{selectedShortDesc}}</h2>
-<h2 class="d-flex justify-content-center mt-3" *ngIf="!newUsdaData$">USDA Data</h2>
+<h2 class="d-flex justify-content-center mt-4" *ngIf="!newUsdaData$">USDA Data</h2>
+<h2 class="d-flex justify-content-center mt-4" *ngIf="newUsdaData$ && !secondUsdaData$">{{selectedShortDesc}}</h2>
+<h2 class="d-flex justify-content-center mt-4" *ngIf="newUsdaData$ && secondUsdaData$">{{selectedShortDesc}} vs. {{secondSelectedShortDesc}}</h2>
 
 <div class="content-header justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 ">
-  <!-- <div class="row pt-3 mx-auto" >
-    <h1 class="h2 " *ngIf="newUsdaData$">{{selectedShortDesc}}</h1>
-    <h2 class="h2 mb-2 pb-2 " *ngIf="!newUsdaData$">Usda</h2>
-
-  </div> -->
   <div class="row">
-  
-    <!-- <div class="col-md-4 mt-4"> -->
-    <!-- <h1 *ngIf="!newUsdaData$">List of Usda Data</h1> -->
-    <!-- <h1 *ngIf="newUsdaData$">{{selectedShortDesc}}</h1> -->
-    <!-- <img *ngIf="newUsdaData$" src="../../../assets/images/zaner-ag-hedge-white-logo.svg" alt="Zaner Ag Hedge" height="100" style="background-color: rgba(13,110,253,1.0);" class="p-2"> -->
-    <!-- </div> -->
-    <!-- <div class="col-md-8 d-flex flex-row"> -->
     <form class="row gy-0 gx-3 align-items-center">
       <div class="row g-1 mx-2">
 
@@ -219,7 +194,8 @@
               .concat(secondSelectedItems[3].item_text.toString())), secondSelectedShortDesc)">Go</button>
           
           <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 5)"
-            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, 
+            secondSelectedItems[0].item_text.toString()
               .concat(',')
               .concat(secondSelectedItems[1].item_text.toString())
               .concat(',')
@@ -235,7 +211,6 @@
           </button>
           <button class="btn btn-secondary"  (click)="closeSecondQueryMenu()">
             <fa-icon [icon]="faXmark"></fa-icon>
-
           </button>
 
         </div>
@@ -246,10 +221,20 @@
   </div>
 </div>
 
-<div>
+<ng-container *ngIf="newUsdaData$ != null && secondUsdaData$ != null">
+  <div>
+    <button class="btn btn-primary me-1">
+      <fa-icon [icon]="faFloppyDisk"></fa-icon>
+      Save</button>
+    <button class="btn btn-secondary mx-1" (click)="reload()">      
+      <fa-icon [icon]="faArrowsRotate"></fa-icon>
+      Refresh</button>
+  </div>
+</ng-container>
+
+<div mt-3>
   <canvas *ngIf="newUsdaData$ && this.selectedChart== 'barchart' && !isError" id="barchart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
   <canvas *ngIf="newUsdaData$ && this.selectedChart== 'linechart' && !isError" id="linechart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
-
 </div>
 <ng-container *ngIf="isError">
   <div class="col-md-12 text-center">

@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule, NgModel } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMinus, faPlus, faSkating, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus, faSkating, faXmark, faFloppyDisk, faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
 import { DROPDOWN_YEARS, dropDownList } from '../../shared/dropdownList';
 
 var bootstrap: any;
@@ -44,6 +44,8 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     faPlus = faPlus;
     faMinus = faMinus;
     faXmark = faXmark;
+    faFloppyDisk = faFloppyDisk;
+    faArrowsRotate = faArrowsRotate;
     newUsdaData$?: Observable<Datum[]>;
     secondUsdaData$?: Observable<Datum[]>;
     isValidQuery: boolean = true;
@@ -301,24 +303,18 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                 response.forEach(element => {
                     switch(selectedMetric) {
                       case 'AREA PLANTED':
-                        debugger
-                        this.chadData = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData.push(this.chadData)                       
+                        this.PopulateData(element);
+                        // this.chadData = {
+                        //   year: element.year,
+                        //   value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                        //   reference_period_desc: element.reference_period_desc
+                        // }
+                        // this.smartChartData.push(this.chadData)                       
                         break;
                       case 'AREA HARVESTED':
                         if(element.domaincat_desc == 'NOT SPECIFIED' 
                           && element.statisticcat_desc == 'AREA PLANTED') {
-                            this.chadData = {
-                              year: element.year,
-                              value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                              reference_period_desc: element.reference_period_desc
-                            }
-                            this.smartChartData.push(this.chadData)
-                            console.log('chadData by year:' + this.chadData2)
+                            this.PopulateData(element);
                           }
                             break;
                       case 'CONDITION':
@@ -328,66 +324,30 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                         else {
                           this.selectedShortDesc = 'SOYBEANS - CONDITION, MEASURED IN PCT EXCELLENT'
                         }
-                        this.chadData = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData.push(this.chadData)
-                        console.log('chadData by year:' + this.chadData2)
+                        this.PopulateData(element);
                         break;
                       case 'ETHANOL USAGE':
                         if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
                           && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)') {
-                            this.chadData = {
-                              year: element.year,
-                              value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                              reference_period_desc: element.reference_period_desc
-                            }
-                            this.smartChartData.push(this.chadData)
-                            console.log('chadData by year:' + this.chadData2)
+                            this.PopulateData(element);
                         }
                         break;
                       case 'PRODUCTION':
                         if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
-                          this.chadData = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData.push(this.chadData)
-                          console.log('chadData by year:' + this.chadData2)
+                          this.PopulateData(element);
                         }
                         break;
                       case 'PROGRESS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData.push(this.chadData)
-                          console.log('chadData by year:' + this.chadData2)
+                          this.PopulateData(element);
                         }
                         break;
                       case 'RESIDUAL USAGE':
-                        this.chadData = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData.push(this.chadData)
-                        console.log('chadData by year:' + this.chadData2)
+                        this.PopulateData(element);
                         break;
                       case 'STOCKS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData.push(this.chadData)
-                          console.log('chadData by year:' + this.chadData2)
+                          this.PopulateData(element);
                         }
                         break;
                       default:
@@ -489,91 +449,49 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                 response.forEach(element => {               
                     switch(secondSelectedMetric) {
                       case 'AREA PLANTED':
-                          this.chadData2 = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData2.push(this.chadData2)
-                          console.log('chadData by year:' + this.chadData2)
+                        this.PopulateData2(element);
                           break;
                       case 'AREA HARVESTED':
                         if(element.domaincat_desc == 'NOT SPECIFIED' 
                           && element.statisticcat_desc == 'AREA HARVESTED'
                           && (element.short_desc == 'CORN, GRAIN - ACRES HARVESTED' 
                             || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
-                              this.chadData2 = {
-                                year: element.year,
-                                value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                                reference_period_desc: element.reference_period_desc
-                              }
-                              this.smartChartData2.push(this.chadData2)
+                              this.PopulateData2(element);
                         }
                         break;
                       case 'CONDITION':
                         this.selectedShortDesc = `${secondSelectedCommodity} - CONDITION, MEASURED IN PCT EXCELLENT`
-                        this.chadData2 = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData2.push(this.chadData2)
+                        this.PopulateData2(element);
                         break;
                       case 'ETHANOL USAGE':
                         if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
                           && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)'
                           && element.reference_period_desc !== 'YEAR') {
-                            this.chadData2 = {
-                              year: element.year,
-                              value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                              reference_period_desc: element.reference_period_desc
-                            }
-                            this.smartChartData2.push(this.chadData2)
+                            this.PopulateData2(element);
                       }
                         break;
                       case 'PRODUCTION':
                         if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
-                          this.chadData2 = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData2.push(this.chadData2)
+                          this.PopulateData2(element);
                       }
                         break;
                       case 'PROGRESS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData2 = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData2.push(this.chadData2)
+                          this.PopulateData2(element);
                         }
                         break;
                       case 'RESIDUAL USAGE':
-                        this.chadData2 = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData2.push(this.chadData2)
+                        this.PopulateData2(element);
                         break;
                       case 'STOCKS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData2 = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData2.push(this.chadData2)
+                          this.PopulateData2(element);
                         }
                         break;
                       default:
                         console.log('Bad query')
                         break;
                     }
-                 
                   this.unit = response[0].unit_desc;
                 });
                 
@@ -684,18 +602,18 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       this.RemoveSpinner();
     }
 
-    RenderSecondChart(chadChartData: dataSet[], type: string, id: string) {
+    RenderSecondChart(chadChartData2: dataSet[], type: string, id: string) {
       // debugger
-      const chartLabels: string[] = chadChartData
-        .map(chartData => chartData.reference_period_desc);
+      const chartLabels: string[] = chadChartData2
+        .map(chartData2 => chartData2.reference_period_desc);
       const filteredChartLabels = chartLabels.filter((item, index) => {
         return(chartLabels.indexOf(item) == index);
       })
 
-      this.chartData2 = chadChartData.map(chartData2 => chartData2.value);
-      console.log('chadChartData:' + chadChartData)
+      this.chartData2 = chadChartData2.map(chartData2 => chartData2.value);
+      console.log('chadChartData:' + chadChartData2)
 
-      const chartYear2: number[] = chadChartData.map(chartData2 => chartData2.year);
+      const chartYear2: number[] = chadChartData2.map(chartData2 => chartData2.year);
 
       console.log('chartLabels:' + chartLabels)
       console.log('chartData:' + this.chartData2)
@@ -705,7 +623,7 @@ debugger
       this.secondSelectedItems.forEach(x => {
         console.log(x)
         this.TomDataSet.push({
-          label: x.item_text, data: chadChartData.filter(y => y.year == x.item_text)
+          label: x.item_text, data: chadChartData2.filter(y => y.year == x.item_text)
           // reference_period_desc: x.item_text, value: chadChartData.filter(y => y.year == x.item_text)
             .map(chartData2 => chartData2.value), backgroundColor: this.colorArray[0], borderColor: this.colorArray[0]
         })
@@ -717,24 +635,23 @@ debugger
       this.RemoveSpinner();
     }
 
-    // PopulateData(element: dataSet) {
-    //     this.chadData = {
-    //     year: element.year,
-    //     value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-    //     reference_period_desc: element.reference_period_desc
-    //   }
-    //   this.smartChartData.push(this.chadData)
-    // }
+    PopulateData(element: Datum) {
+        this.chadData = {
+        year: element.year,
+        value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+        reference_period_desc: element.reference_period_desc
+      }
+      this.smartChartData.push(this.chadData)
+    }
 
-    // PopulateData2(year: number, value: string, reference_period_desc: string) {
-    //   let element: any;
-    //   this.chadData2 = {
-    //     year: element.year,
-    //     value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-    //     reference_period_desc: element.reference_period_desc
-    //   }
-    //   this.smartChartData2.push(this.chadData2)
-    // }
+    PopulateData2(element: Datum) {
+      this.chadData2 = {
+        year: element.year,
+        value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+        reference_period_desc: element.reference_period_desc
+      }
+      this.smartChartData2.push(this.chadData2)
+    }
 
     DisplaySpinner() {
       document.getElementById("load-usda-button")?.classList.add("spinner-border")
