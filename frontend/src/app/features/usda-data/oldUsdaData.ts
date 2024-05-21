@@ -11,7 +11,7 @@ import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-d
 import { FormsModule, NgModel } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { faMinus, faPlus, faSkating, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { DROPDOWN_YEARS, dropDownList } from '../../shared/dropdownList';
+import { dropDownList } from '../../shared/dropdownList';
 
 var bootstrap: any;
 
@@ -22,7 +22,11 @@ interface dataSet {
 }
 
 let FakeDataSet: any[] = [88000000, 91123456, 90654321, 87789789,90641000]
-
+  // {
+    // label: "2022",
+//     data: [88000000, 91123456, 90654321, 87789789,90641000],
+//   } 
+// ]
 
 @Component({
   selector: 'app-usda-data',
@@ -78,10 +82,10 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     timeframe: string = '';
     xAxis: string[] = [];
     smartChartData: dataSet[] = [];
-    smartChartData2: dataSet[] = [];
-    barChartData: dataSet[] = [];
     lineChartData: dataSet[] = [];
     lineChartData2: dataSet[] = [];
+    chadData2: dataSet[] = [];
+    // chadData2021: dataSet[] = [];
     periodTwenty: any[] = [];
     periodTwentyOne: any[] = [];
     periodTwentyTwo: any[] = [];
@@ -95,21 +99,11 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     multiyearPeriod: any[] = [];
     multiyearValue: any[] = [];
     colorArray:any[] = [];
-    chadData: dataSet = {
-      year: 0,
-      value: 0,
-      reference_period_desc: ''
-    };
-    chadData2: dataSet = {
-      year: 0,
-      value: 0,
-      reference_period_desc: ''
-    };
 
     getUsdaSubscription?: Subscription;
     getSecondUsdaSubscription?: Subscription;
     errorCode: string = '404';
-    errorNumber:number = 400;
+    errorNumber:number = 108;
 
     dropdownList: any[] = [];
     dropdownList2: any[] = [];
@@ -121,8 +115,32 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       private http: HttpClient) { }
   
     ngOnInit() {
-      this.dropdownList2 = this.dropdownList = DROPDOWN_YEARS;
-      
+      this.dropdownList2 = this.dropdownList = [
+        { item_id: 1, item_text: '2024' },
+        { item_id: 2, item_text: '2023' },
+        { item_id: 3, item_text: '2022' },
+        { item_id: 4, item_text: '2021' },
+        { item_id: 5, item_text: '2020' },
+        { item_id: 6, item_text: '2019' },
+        { item_id: 7, item_text: '2018' },
+        { item_id: 8, item_text: '2017' },
+        { item_id: 9, item_text: '2016' },
+        { item_id: 10, item_text: '2015' },
+        { item_id: 11, item_text: '2014' },
+        { item_id: 12, item_text: '2013' },
+        { item_id: 13, item_text: '2012' },
+        { item_id: 14, item_text: '2010' },
+        { item_id: 15, item_text: '2009' },
+        { item_id: 16, item_text: '2008' },
+        { item_id: 17, item_text: '2007' },
+        { item_id: 18, item_text: '2006' },
+        { item_id: 19, item_text: '2005' },
+        { item_id: 20, item_text: '2004' },
+        { item_id: 21, item_text: '2003' },
+        { item_id: 22, item_text: '2002' },
+        { item_id: 23, item_text: '2001' },
+        { item_id: 24, item_text: '2000' },
+      ];
       this.selectedItems = [];
       this.dropdownSettings = {
         singleSelection: false,
@@ -133,18 +151,26 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
         itemsShowLimit: 3,
         allowSearchFilter: true
       };
+
+      const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+      const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => 
+        new bootstrap.Tooltip(tooltipTriggerEl))
     }
   
     onItemSelect(item: any) {
       this.selectedItems.push(item);
+      console.log(item);
+      console.log(this.selectedItems[0].item_text)
       for (let i = 0; i < this.selectedItems.length; i++) {
         this.selectedYear
           .concat(this.selectedItems[i].item_text.toString())      
       }
+      console.log(this.selectedYear)
     }
 
     onSelectAll(items: any) {
       this.selectedItems.push(...items)
+      console.log(items);
     }
 
     onDeselect(item:any) {
@@ -234,8 +260,10 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     }
 
     loadDataWithParams(selectedMetric: string, selectedCommodity: string, selectedYear: string, selectedShortDesc: string): void {
+      this.setSelectedYear();
+      console.log('selectedYear:' + selectedYear);
       this.isLoading = true;
-      //  debugger
+//  debugger
       // Set Short Description
       switch (this.selectedMetric) {
         case 'AREA PLANTED':
@@ -294,33 +322,26 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
         this.setSelectedYear();
         try {
           this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
-          debugger
+// debugger
           this.getUsdaSubscription = this.newUsdaData$
             .subscribe({
               next: (response) => {
                 response.forEach(element => {
+                  if(this.selectedChart == 'barchart') {
                     switch(selectedMetric) {
                       case 'AREA PLANTED':
-                        debugger
-                        this.chadData = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData.push(this.chadData)                       
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                         break;
                       case 'AREA HARVESTED':
                         if(element.domaincat_desc == 'NOT SPECIFIED' 
                           && element.statisticcat_desc == 'AREA PLANTED') {
-                            this.chadData = {
-                              year: element.year,
-                              value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                              reference_period_desc: element.reference_period_desc
-                            }
-                            this.smartChartData.push(this.chadData)
-                            console.log('chadData by year:' + this.chadData2)
-                          }
-                            break;
+                          // && (element.short_desc == 'CORN - ACRES HARVESTED' 
+                          //   || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                          this.period.push(element.year + ' ' + element.reference_period_desc)
+                          this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        break;
                       case 'CONDITION':
                         if(selectedCommodity = 'CORN') {
                           this.selectedShortDesc = 'CORN - CONDITION, MEASURED IN PCT EXCELLENT'
@@ -328,84 +349,150 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                         else {
                           this.selectedShortDesc = 'SOYBEANS - CONDITION, MEASURED IN PCT EXCELLENT'
                         }
-                        this.chadData = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData.push(this.chadData)
-                        console.log('chadData by year:' + this.chadData2)
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                         break;
                       case 'ETHANOL USAGE':
                         if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
                           && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)') {
-                            this.chadData = {
-                              year: element.year,
-                              value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                              reference_period_desc: element.reference_period_desc
-                            }
-                            this.smartChartData.push(this.chadData)
-                            console.log('chadData by year:' + this.chadData2)
+                          this.period.push(element.year + ' ' + element.reference_period_desc)
+                          this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                         }
                         break;
                       case 'PRODUCTION':
                         if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
-                          this.chadData = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData.push(this.chadData)
-                          console.log('chadData by year:' + this.chadData2)
-                        }
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
                         break;
                       case 'PROGRESS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData.push(this.chadData)
-                          console.log('chadData by year:' + this.chadData2)
+                          this.period.push(element.year + ' ' + element.reference_period_desc)
+                          this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                         }
                         break;
                       case 'RESIDUAL USAGE':
-                        this.chadData = {
-                          year: element.year,
-                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                          reference_period_desc: element.reference_period_desc
-                        }
-                        this.smartChartData.push(this.chadData)
-                        console.log('chadData by year:' + this.chadData2)
+                        this.period.push(element.year + ' ' + element.reference_period_desc)
+                        this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                         break;
                       case 'STOCKS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData = {
-                            year: element.year,
-                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-                            reference_period_desc: element.reference_period_desc
-                          }
-                          this.smartChartData.push(this.chadData)
-                          console.log('chadData by year:' + this.chadData2)
+                          this.period.push(element.year + ' ' + element.reference_period_desc)
+                          this.value.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
                         }
                         break;
                       default:
                         console.log('Bad query')
                         break;
-                    }                  
+                    }
+                  }
+                  else if(this.selectedChart == 'linechart') {
+                    // debugger
+                    switch(selectedMetric) {
+                      case 'AREA PLANTED':
+                          var chadData: dataSet = {
+                            year: element.year,
+                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                            reference_period_desc: element.reference_period_desc
+                          }
+                          this.lineChartData.push(chadData)
+                          console.log('chadData by year:' + this.chadData2)
+                          break;
+                      case 'AREA HARVESTED':
+                        if(element.domaincat_desc == 'NOT SPECIFIED' 
+                          && element.statisticcat_desc == 'AREA HARVESTED'
+                          && (element.short_desc == 'CORN, GRAIN - ACRES HARVESTED' 
+                            || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                              var chadData: dataSet = {
+                                year: element.year,
+                                value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                                reference_period_desc: element.reference_period_desc
+                              }
+                              this.lineChartData.push(chadData)
+                        }
+                        break;
+                      case 'CONDITION':
+                        this.selectedShortDesc = `${selectedCommodity} - CONDITION, MEASURED IN PCT EXCELLENT`
+                        var chadData: dataSet = {
+                          year: element.year,
+                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                          reference_period_desc: element.reference_period_desc
+                        }
+                        this.lineChartData.push(chadData)
+                        break;
+                      case 'ETHANOL USAGE':
+                        if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
+                          && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)'
+                          && element.reference_period_desc !== 'YEAR') {
+                            var chadData: dataSet = {
+                              year: element.year,
+                              value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                              reference_period_desc: element.reference_period_desc
+                            }
+                            this.lineChartData.push(chadData)
+                      }
+                        break;
+                      case 'PRODUCTION':
+                        if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
+                          var chadData: dataSet = {
+                            year: element.year,
+                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                            reference_period_desc: element.reference_period_desc
+                          }
+                          this.lineChartData.push(chadData)
+                      }
+                        break;
+                      case 'PROGRESS':
+                        if(element.domaincat_desc == 'NOT SPECIFIED') {
+                          var chadData: dataSet = {
+                            year: element.year,
+                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                            reference_period_desc: element.reference_period_desc
+                          }
+                          this.lineChartData.push(chadData)
+                        }
+                        break;
+                      case 'RESIDUAL USAGE':
+                        var chadData: dataSet = {
+                          year: element.year,
+                          value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                          reference_period_desc: element.reference_period_desc
+                        }
+                        this.lineChartData.push(chadData)
+                        break;
+                      case 'STOCKS':
+                        if(element.domaincat_desc == 'NOT SPECIFIED') {
+                          var chadData: dataSet = {
+                            year: element.year,
+                            value: parseInt((element.value).replace(/[^0-9.]/g,'')),
+                            reference_period_desc: element.reference_period_desc
+                          }
+                          this.lineChartData.push(chadData)
+                        }
+                        break;
+                      default:
+                        console.log('Bad query')
+                        break;
+                    }
+                  }
+                  else {
+                  }
                   this.unit = response[0].unit_desc;
                 });
                 
+                console.log('x axis: ' + this.period)
+                console.log('y axis: ' + this.value)
                 if(this.selectedChart == 'barchart') {
                   //THIS WORKS
-                  // this.RenderChart(this.period, this.value, 'bar', 'barchart');
+                  this.RenderChart(this.period, this.value, 'bar', 'barchart');
                   //NEW TRY 153PM Monday
                   debugger
-                  this.RenderSmartChart(this.smartChartData, 'bar', this.selectedChart)
+                  let type = 'bar'
+                  this.RenderSmartChart(this.smartChartData, type, this.selectedChart)
                 }
                 else {
-                this.RenderSmartChart(this.smartChartData, 'line', this.selectedChart);
+                console.log('lineChartData:' + this.lineChartData)
+                this.RenderLineChart(this.lineChartData, 'line', 'linechart');
                 }
               },
               error: (err: HttpErrorResponse) => {
@@ -422,7 +509,10 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     }
 
     loadDataWithParams2(secondSelectedMetric: string, secondSelectedCommodity: string, secondSelectedYear: string, secondSelectedShortDesc: string): void {
+      this.setSelectedYear2();
+      console.log('selectedYear2:' + secondSelectedYear);
       this.isLoading = true;
+ 
       // Set Short Description
       // debugger
       switch (this.secondSelectedMetric) {
@@ -486,15 +576,75 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           this.getSecondUsdaSubscription = this.secondUsdaData$
             .subscribe({
               next: (response) => {
-                response.forEach(element => {               
+                response.forEach(element => {
+                  if(this.secondSelectedChart == 'barchart') {
                     switch(secondSelectedMetric) {
                       case 'AREA PLANTED':
-                          this.chadData2 = {
+                        this.period2.push(element.year + ' ' + element.reference_period_desc)
+                        this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        break;
+                      case 'AREA HARVESTED':
+                        if(element.domaincat_desc == 'NOT SPECIFIED' 
+                          && element.statisticcat_desc == 'AREA PLANTED') {
+                          // && (element.short_desc == 'CORN - ACRES HARVESTED' 
+                          //   || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
+                          this.period2.push(element.year + ' ' + element.reference_period_desc)
+                          this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        break;
+                      case 'CONDITION':
+                        if(secondSelectedCommodity = 'CORN') {
+                          this.selectedShortDesc = 'CORN - CONDITION, MEASURED IN PCT EXCELLENT'
+                        }
+                        else {
+                          this.selectedShortDesc = 'SOYBEANS - CONDITION, MEASURED IN PCT EXCELLENT'
+                        }
+                        this.period2.push(element.year + ' ' + element.reference_period_desc)
+                        this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        break;
+                      case 'ETHANOL USAGE':
+                        if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
+                          && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)') {
+                          this.period2.push(element.year + ' ' + element.reference_period_desc)
+                          this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        break;
+                      case 'PRODUCTION':
+                        if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
+                        this.period2.push(element.year + ' ' + element.reference_period_desc)
+                        this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                      }
+                        break;
+                      case 'PROGRESS':
+                        if(element.domaincat_desc == 'NOT SPECIFIED') {
+                          this.period2.push(element.year + ' ' + element.reference_period_desc)
+                          this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        break;
+                      case 'RESIDUAL USAGE':
+                        this.period2.push(element.year + ' ' + element.reference_period_desc)
+                        this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        break;
+                      case 'STOCKS':
+                        if(element.domaincat_desc == 'NOT SPECIFIED') {
+                          this.period2.push(element.year + ' ' + element.reference_period_desc)
+                          this.value2.push(parseInt((element.value).replace(/[^0-9.]/g,'')))
+                        }
+                        break;
+                      default:
+                        console.log('Bad query')
+                        break;
+                    }
+                  }
+                  else if(this.secondSelectedChart == 'linechart') {
+                    switch(secondSelectedMetric) {
+                      case 'AREA PLANTED':
+                          var chadData2: dataSet = {
                             year: element.year,
                             value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                             reference_period_desc: element.reference_period_desc
                           }
-                          this.smartChartData2.push(this.chadData2)
+                          this.lineChartData2.push(chadData2)
                           console.log('chadData by year:' + this.chadData2)
                           break;
                       case 'AREA HARVESTED':
@@ -502,92 +652,95 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                           && element.statisticcat_desc == 'AREA HARVESTED'
                           && (element.short_desc == 'CORN, GRAIN - ACRES HARVESTED' 
                             || element.short_desc == 'SOYBEANS - ACRES HARVESTED')) {
-                              this.chadData2 = {
+                              var chadData2: dataSet = {
                                 year: element.year,
                                 value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                                 reference_period_desc: element.reference_period_desc
                               }
-                              this.smartChartData2.push(this.chadData2)
+                              this.lineChartData2.push(chadData2)
                         }
                         break;
                       case 'CONDITION':
                         this.selectedShortDesc = `${secondSelectedCommodity} - CONDITION, MEASURED IN PCT EXCELLENT`
-                        this.chadData2 = {
+                        var chadData2: dataSet = {
                           year: element.year,
                           value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                           reference_period_desc: element.reference_period_desc
                         }
-                        this.smartChartData2.push(this.chadData2)
+                        this.lineChartData2.push(chadData2)
                         break;
                       case 'ETHANOL USAGE':
                         if(element.domaincat_desc !== 'TYPE OF OPERATION: (DRY MILL PLANT)' 
                           && element.domaincat_desc !== 'TYPE OF OPERATION: (WET MILL PLANT)'
                           && element.reference_period_desc !== 'YEAR') {
-                            this.chadData2 = {
+                            var chadData2: dataSet = {
                               year: element.year,
                               value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                               reference_period_desc: element.reference_period_desc
                             }
-                            this.smartChartData2.push(this.chadData2)
+                            this.lineChartData2.push(chadData2)
                       }
                         break;
                       case 'PRODUCTION':
                         if(element.domaincat_desc == 'NOT SPECIFIED' && element.source_desc == 'SURVEY') {
-                          this.chadData2 = {
+                          var chadData2: dataSet = {
                             year: element.year,
                             value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                             reference_period_desc: element.reference_period_desc
                           }
-                          this.smartChartData2.push(this.chadData2)
+                          this.lineChartData2.push(chadData2)
                       }
                         break;
                       case 'PROGRESS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData2 = {
+                          var chadData2: dataSet = {
                             year: element.year,
                             value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                             reference_period_desc: element.reference_period_desc
                           }
-                          this.smartChartData2.push(this.chadData2)
+                          this.lineChartData2.push(chadData2)
                         }
                         break;
                       case 'RESIDUAL USAGE':
-                        this.chadData2 = {
+                        var chadData2: dataSet = {
                           year: element.year,
                           value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                           reference_period_desc: element.reference_period_desc
                         }
-                        this.smartChartData2.push(this.chadData2)
+                        this.lineChartData2.push(chadData2)
                         break;
                       case 'STOCKS':
                         if(element.domaincat_desc == 'NOT SPECIFIED') {
-                          this.chadData2 = {
+                          var chadData2: dataSet = {
                             year: element.year,
                             value: parseInt((element.value).replace(/[^0-9.]/g,'')),
                             reference_period_desc: element.reference_period_desc
                           }
-                          this.smartChartData2.push(this.chadData2)
+                          this.lineChartData2.push(chadData2)
                         }
                         break;
                       default:
                         console.log('Bad query')
                         break;
                     }
-                 
+                  }
+                  else {}
                   this.unit = response[0].unit_desc;
                 });
                 
+                console.log('x axis: ' + this.period2)
+                console.log('y axis: ' + this.value2)
                 // debugger
                 if(this.secondSelectedChart == 'barchart') {
-                this.myChart.data.datasets.push(this.smartChartData2)
+                this.myChart.data.datasets.push(this.value2)
 
                   // this.myChart.data.datasets.push(this.period2, this.value2)
                   // this.RenderChart2(this.period2, this.value2, 'bar', 'barchart');
                 }
                 else {
-                console.log('lineChartData:' + this.smartChartData2)
+                console.log('lineChartData:' + this.lineChartData2)
                 debugger
-                this.RenderSecondChart(this.smartChartData2, 'line', 'linechart');
+                this.RenderSecondChart(this.lineChartData2, 'line', 'linechart');
                 }
               },
               
@@ -604,9 +757,46 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       }
     }
 
+    RenderChart(labelData: any[], mainData: any[], type: string, id: string) {
+      this.myChart = new Chart(this.selectedChart, {
+        type: 'bar',
+        data: {
+          labels: labelData,
+          datasets: [{
+            label: this.unit,
+            data: mainData,
+            backgroundColor: 'rgba(13,110,253,1.0)',
+            borderColor: ['rgba(13,110,253,1.0)'],
+            borderWidth: 1
+          },
+          // {
+          //   label: this.unit,
+          //   data: FakeDataSet,
+          //   backgroundColor: 'rgba(255, 99, 132, 0.8)',
+          //   borderColor: ['rgba(255, 99, 132, 0.8)'],
+          //   borderWidth: 1
+          // }
+      ]
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            }
+          },
+          animation: {
+            duration: 2000,
+            easing: "linear",
+          },
+        }
+      });
+      this.isLoading = false;
+      this.RemoveSpinner();
+    }
+
     RenderSmartChart(smartChartData: dataSet[], type: string, id: string) {
       const chartLabels: string[] = smartChartData
-        .map(chartData => chartData.reference_period_desc);
+      .map(chartData => chartData.reference_period_desc);
       const filteredChartLabels = chartLabels.filter((item, index) => {
         return(chartLabels.indexOf(item) == index);
       })
@@ -631,7 +821,22 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       })
 
       this.myChart = new Chart(this.selectedChart, {
-        type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
+        // data: {
+        //   datasets: [
+        //     // {
+        //     //   type: 'bar',
+        //     //   label: 'FakeDataSet',
+        //     //   data: FakeDataSet
+        //     // }, 
+        //     {
+        //       type: 'line',
+        //       label: 'FirstDataSet',
+        //       data: chartData
+        //     }
+        //   ],
+        //   labels: filteredChartLabels
+        // },
+        type: 'bar',
         data: {
           labels: filteredChartLabels,
           datasets: this.TomDataSet
@@ -684,6 +889,72 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       this.RemoveSpinner();
     }
 
+    RenderLineChart(chadChartData: dataSet[], type: string, id: string) {
+      // debugger
+      const chartLabels: string[] = chadChartData
+        .map(chartData => chartData.reference_period_desc);
+      const filteredChartLabels = chartLabels.filter((item, index) => {
+        return(chartLabels.indexOf(item) == index);
+      })
+
+      const chartData: number[] = chadChartData.map(chartData => chartData.value);
+      console.log('chadChartData:' + chadChartData)
+
+      const chartYear: number[] = chadChartData.map(chartData => chartData.year);
+
+      console.log('chartLabels:' + chartLabels)
+      console.log('chartData:' + chartData)
+      console.log('chartYear:' + chartYear)
+
+      this.selectedItems.forEach(x => {
+        console.log(x)
+        this.TomDataSet.push({
+          label: x.item_text, data: chadChartData.filter(y => y.year == x.item_text)
+          // reference_period_desc: x.item_text, value: chadChartData.filter(y => y.year == x.item_text)
+            .map(chartData => chartData.value)
+        })
+        console.log(this.TomDataSet)
+      })
+
+      this.myChart = new Chart(this.selectedChart, {
+        // data: {
+        //   datasets: [
+        //     // {
+        //     //   type: 'bar',
+        //     //   label: 'FakeDataSet',
+        //     //   data: FakeDataSet
+        //     // }, 
+        //     {
+        //       type: 'line',
+        //       label: 'FirstDataSet',
+        //       data: chartData
+        //     }
+        //   ],
+        //   labels: filteredChartLabels
+        // },
+        type: 'line',
+        data: {
+          labels: filteredChartLabels,
+          datasets: this.TomDataSet
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: false,
+            }
+          },
+          animation: {
+            duration: 2000,
+            easing: "linear",
+          },
+          plugins: {
+          },
+        }
+      });
+      this.isLoading = false;
+      this.RemoveSpinner();
+    }
+
     RenderSecondChart(chadChartData: dataSet[], type: string, id: string) {
       // debugger
       const chartLabels: string[] = chadChartData
@@ -711,30 +982,60 @@ debugger
         })
         console.log(this.TomDataSet)
       })
+
+      // this.myChart.data.datasets.push({
+      //   label: 'Second Data Set',
+      //   data: this.chartData2,
+      //   type: 'line',
+      //   backgroundColor: 'rgba(54, 214, 2, 0.9)'
+      // })
       this.myChart.update();
-      
+      // this.myChart = new Chart(this.secondSelectedChart, {
+      //   // type: 'line',
+      //   data: {
+      //     datasets: [
+      //       {
+      //         type: 'line',
+      //         label: 'Second',
+      //         data: this.chartData2
+      //       }, 
+      //       {
+      //         type: 'line',
+      //         label: 'First',
+      //         data: this.chartData
+      //       }
+      //     ],
+      //     labels: filteredChartLabels
+      //   },
+      //   // data: {
+      //   //   labels: filteredChartLabels,
+      //   //   datasets: TomDataSet
+      //     // , FakeDataSet
+      //     // datasets: [
+      //     //   {
+      //     //     type: 'line',
+      //     //     label: 'Tom',
+      //     //     data: TomDataSet[0].data
+      //     // }, {
+      //     //   type: 'bar',
+      //     //   label: 'Bar Dataset',
+      //     //   data: FakeDataSet[0].data
+      //     // }], 
+      //     // labels: filteredChartLabels
+      //   // },
+      //   options: {
+      //     scales: {
+      //       y: {
+      //         beginAtZero: false,
+      //       }
+      //     },
+      //     plugins: {
+      //     },
+      //   }
+      // });
       this.isLoading = false;
       this.RemoveSpinner();
     }
-
-    // PopulateData(element: dataSet) {
-    //     this.chadData = {
-    //     year: element.year,
-    //     value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-    //     reference_period_desc: element.reference_period_desc
-    //   }
-    //   this.smartChartData.push(this.chadData)
-    // }
-
-    // PopulateData2(year: number, value: string, reference_period_desc: string) {
-    //   let element: any;
-    //   this.chadData2 = {
-    //     year: element.year,
-    //     value: parseInt((element.value).replace(/[^0-9.]/g,'')),
-    //     reference_period_desc: element.reference_period_desc
-    //   }
-    //   this.smartChartData2.push(this.chadData2)
-    // }
 
     DisplaySpinner() {
       document.getElementById("load-usda-button")?.classList.add("spinner-border")
@@ -752,6 +1053,9 @@ debugger
       console.log(color);
       this.colorArray.push(color);
     }
+
+    RandomBorderColor() {}
+
 
     reload(){
       window.location.reload();
