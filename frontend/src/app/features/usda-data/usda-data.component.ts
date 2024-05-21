@@ -64,7 +64,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     secondSelectedShortDesc: string = '';
     secondSelectedChart: string = '';
     TomDataSet: any[] = [];
-
+    dougDataSet: any[] = [];
     myChart: any = '';
     secondChart: any = '';
     newChartData: any;
@@ -296,7 +296,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
         this.setSelectedYear();
         try {
           this.newUsdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataRefactored?Metric=${selectedMetric}&Commodity=${selectedCommodity}&Year=${selectedYear}&short_desc=${this.selectedShortDesc}`)
-          debugger
+          // debugger
           this.getUsdaSubscription = this.newUsdaData$
             .subscribe({
               next: (response) => {
@@ -533,23 +533,56 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       console.log('chadChartData:' + smartChartData)
 
       const chartYear: number[] = smartChartData.map(chartData => chartData.year);
+      console.log('chartYear:' + chartYear)
 
       console.log('chartLabels:' + chartLabels)
       console.log('chartData:' + chartData)
-      console.log('chartYear:' + chartYear)
 
       this.selectedItems.forEach(x => {
-        console.log(x)
         this.TomDataSet.push({
-          label: x.item_text, data: smartChartData.filter(y => y.year == x.item_text)
+          type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
+          label: x.item_text, 
+          data: smartChartData.filter(y => y.year == x.item_text)
           // reference_period_desc: x.item_text, value: chadChartData.filter(y => y.year == x.item_text)
             .map(chartData => chartData.value)
         })
         console.log(this.TomDataSet)
       })
-
+      debugger
+      for(let i = 0; i < smartChartData.length; i++) {
+        this.dougDataSet.push({
+          type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
+          label: this.smartChartData[i].reference_period_desc,
+          data: smartChartData.filter((y => y.year == chartYear[i]))
+        })
+      }
       this.myChart = new Chart(this.selectedChart, {
-        type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
+        // data: {
+          // labels: filteredChartLabels,
+          // datasets: this.dougDataSet,
+          //  [
+            // {
+            //   type: 'bar',
+            //   label: 'FakeDataSet',
+            //   data: FakeDataSet
+            // }, 
+            // {
+              // type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
+              // label: chartYear[0].toString(),
+              // data: chartData
+              // data: smartChartData.filter(y => y.year == chartYear[0])
+              // data: smartChartData
+
+            // },
+            // {
+            //   type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
+            //   label: chartYear[1].toString(),
+            //   data: smartChartData.filter(y => y.year == chartYear[1])
+            // }
+          // ],
+          // labels: filteredChartLabels
+        // },
+        // type: (this.selectedChart == 'barchart') ? 'bar' : 'line',
         data: {
           labels: filteredChartLabels,
           datasets: this.TomDataSet
@@ -609,12 +642,9 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       const filteredChartLabels = chartLabels.filter((item, index) => {
         return(chartLabels.indexOf(item) == index);
       })
-
       this.chartData2 = chadChartData2.map(chartData2 => chartData2.value);
       console.log('chadChartData:' + chadChartData2)
-
       const chartYear2: number[] = chadChartData2.map(chartData2 => chartData2.year);
-
       console.log('chartLabels:' + chartLabels)
       console.log('chartData:' + this.chartData2)
       console.log('chartYear:' + this.chartYear2)
@@ -623,7 +653,10 @@ debugger
       this.secondSelectedItems.forEach(x => {
         console.log(x)
         this.TomDataSet.push({
-          label: x.item_text, data: chadChartData2.filter(y => y.year == x.item_text)
+          type: (this.secondSelectedChart == 'barchart') ? 'bar' : 'line',
+          label: x.item_text, 
+          data: this.smartChartData2.filter(y => y.year == x.item_text)
+          // data: chadChartData2.filter(y => y.year == x.item_text)
           // reference_period_desc: x.item_text, value: chadChartData.filter(y => y.year == x.item_text)
             .map(chartData2 => chartData2.value), backgroundColor: this.colorArray[0], borderColor: this.colorArray[0]
         })
