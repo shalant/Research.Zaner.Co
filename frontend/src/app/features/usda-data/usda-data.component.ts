@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule, NgModel } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { faMinus, faPlus, faSkating, faXmark, faFloppyDisk, faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
+import { faMinus, faPlus, faXmark, faFloppyDisk, faArrowsRotate } from '@fortawesome/free-solid-svg-icons';
 import { DROPDOWN_YEARS, dropDownList } from '../../shared/dropdownList';
 
 var bootstrap: any;
@@ -109,7 +109,6 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.dropdownList2 = this.dropdownList = DROPDOWN_YEARS;
-
     this.selectedItems = [];
     this.dropdownSettings = {
       singleSelection: false,

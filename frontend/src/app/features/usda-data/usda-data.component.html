@@ -139,40 +139,6 @@
         <div class="col-auto ">
            <button class="btn btn-primary mx-1" *ngIf="!isLoading"
             (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems, secondSelectedShortDesc)">Go</button>
-          <!--
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 2)"
-            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[1].item_text.toString()), secondSelectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 3)"
-            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[1].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[2].item_text.toString())), secondSelectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 4)"
-            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[1].item_text.toString())
-              .concat(',')
-              .concat(secondSelectedItems[2].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[3].item_text.toString())), secondSelectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 5)"
-            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, 
-            secondSelectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[1].item_text.toString())
-              .concat(',')
-              .concat(secondSelectedItems[2].item_text.toString()
-              .concat(',')
-              .concat(secondSelectedItems[3].item_text.toString())
-              .concat(',')
-              .concat(secondSelectedItems[4].item_text.toString())), secondSelectedShortDesc)">Go</button> -->
-
           <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
             <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
             Go...
@@ -204,6 +170,7 @@
   <canvas *ngIf="newUsdaData$ && this.selectedChart== 'barchart' && !isError" id="barchart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
   <canvas *ngIf="newUsdaData$ && this.selectedChart== 'linechart' && !isError" id="linechart" class="watermark" style="background-color: rgba(240,240,240,0.5);"></canvas>
 </div>
+
 <ng-container *ngIf="isError">
   <div class="col-md-12 text-center">
     <h1>{{errorCode}} {{errorNumber}}</h1>

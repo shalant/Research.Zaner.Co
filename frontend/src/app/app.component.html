@@ -16,38 +16,46 @@
       <div class="sidebar-sticky pt-3">
         <ul class="navbar-nav flex-column">
           <li class="nav-item">
-            <a class="nav-link active d-flex align-items-center gap-2 text-dark" aria-current="page" [routerLink]="['/usda-data']">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark ms-2" aria-current="page" [routerLink]="['/usda-data']">
               <fa-icon [icon]="faWheatAwn"></fa-icon>
-              <span>USDA Data</span>
+              <span>
+                <h6>USDA Data</h6>
+              </span>
             </a>
           </li>
           
           <li class="nav-item">
-            <a class="nav-link active d-flex align-items-center gap-2 text-dark" [routerLink]="['/usa-map']">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark ms-2" [routerLink]="['/usa-map']">
               <fa-icon [icon]="faFlagUsa"></fa-icon>
-              <span>USA Map</span>
+              <span>
+                <h6>USA Map</h6>
+              </span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active d-flex align-items-center gap-2 text-dark" [routerLink]="['/world-map']">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark ms-2" [routerLink]="['/world-map']">
               <fa-icon [icon]="faGlobe"></fa-icon>
-              <span>World Map</span>
+              <span>
+                <h6>World Map</h6>
+              </span>
             </a>
           </li>
-        <!-- </ul>
         <hr class="my-3">
 
-        <ul class="nav flex-column mb-auto"> -->
           <li class="nav-item">
-            <a class="nav-link active d-flex align-items-center gap-2 text-dark" href="#">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark ms-2" href="#">
               <fa-icon [icon]="faGear"></fa-icon>
-              <span class="">Settings</span>
+              <span class="">
+                <h6>Settings</h6>
+              </span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link active d-flex align-items-center gap-2 text-dark" href="#">
+            <a class="nav-link active d-flex align-items-center gap-2 text-dark ms-2" href="#">
               <fa-icon [icon]="faUser"></fa-icon>
-              <span>Sign out</span>
+              <span>
+                <h6>Sign out</h6>
+              </span>
             </a>
           </li>
         </ul>
