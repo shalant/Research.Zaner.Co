@@ -30,7 +30,9 @@
           <option *ngIf="selectedCommodity != 'CATTLE' 
             && selectedCommodity !== 'HOGS'
             && selectedCommodity !== 'WHEAT'
-            && selectedCommodity !== 'COTTON'" 
+            && selectedCommodity !== 'COTTON'
+            && selectedCommodity !== 'CANOLA'
+            && selectedCommodity !== 'COFFEE'" 
             value="CONDITION">Condition (excellent)</option>
           <option *ngIf="selectedCommodity == 'CORN' " value="ETHANOL USAGE">Ethanol Usage</option>
           <option  value="PRODUCTION">Production</option>
@@ -38,7 +40,8 @@
             && selectedCommodity !== 'COTTON'
             && selectedCommodity !== 'CANOLA'
             && selectedCommodity !== 'HOGS'
-            && selectedCommodity !== 'WHEAT'"
+            && selectedCommodity !== 'WHEAT'
+            && selectedCommodity !== 'COFFEE'"
             value="PROGRESS">Progress - Emerged</option>
           <option *ngIf="selectedCommodity == 'CORN'" value="RESIDUAL USAGE">Residual Usage</option>
           <option  value="STOCKS">Stocks</option>
@@ -62,42 +65,8 @@
           <option value="linechart">Line</option>
         </select>
         <div class="col-auto">
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 0)"
-            >Go</button>
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 1)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString(), selectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 2)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[1].item_text.toString()), selectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 3)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[1].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[2].item_text.toString())), selectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 4)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[1].item_text.toString())
-              .concat(',')
-              .concat(selectedItems[2].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[3].item_text.toString())), selectedShortDesc)">Go</button>
-          
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (selectedItems.length == 5)"
-            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems[0].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[1].item_text.toString())
-              .concat(',')
-              .concat(selectedItems[2].item_text.toString()
-              .concat(',')
-              .concat(selectedItems[3].item_text.toString())
-              .concat(',')
-              .concat(selectedItems[4].item_text.toString())), selectedShortDesc)">Go</button>
+          <button class="btn btn-primary mx-1" *ngIf="!isLoading"
+            (click)="loadDataWithParams(selectedMetric, selectedCommodity, selectedItems, selectedShortDesc)">Go</button>
           <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
             <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
             Go...
@@ -127,11 +96,12 @@
           <option value="RICE">Rice</option>
           <option value="CANOLA">Canola</option>
           <option value="COFFEE">Coffee</option>
-
         </select>
         <select class="col-sm form-select me-1 custom-form-select" (change)="onSelectMetric2($event)">
           <option selected disabled>Metric</option>
-          <option *ngIf="secondSelectedCommodity != 'CATTLE' && secondSelectedCommodity !== 'HOGS'" value="AREA PLANTED">Acres Planted</option>
+          <option *ngIf="secondSelectedCommodity != 'CATTLE' 
+            && secondSelectedCommodity !== 'HOGS'
+            && secondSelectedCommodity !== 'COFFEE'" value="AREA PLANTED">Acres Planted</option>
           <option *ngIf="secondSelectedCommodity != 'CATTLE' && secondSelectedCommodity !== 'HOGS'" value="AREA HARVESTED">Acres Harvested</option>
           <option *ngIf="secondSelectedCommodity != 'CATTLE' 
             && secondSelectedCommodity !== 'HOGS'
@@ -167,11 +137,9 @@
         </select>
 
         <div class="col-auto ">
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 0)"
-            >Go</button>
-          <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 1)"
-            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString(), secondSelectedShortDesc)">Go</button>
-          
+           <button class="btn btn-primary mx-1" *ngIf="!isLoading"
+            (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems, secondSelectedShortDesc)">Go</button>
+          <!--
           <button class="btn btn-primary mx-1" *ngIf="(!isLoading) && (secondSelectedItems.length == 2)"
             (click)="loadDataWithParams2(secondSelectedMetric, secondSelectedCommodity, secondSelectedItems[0].item_text.toString()
               .concat(',')
@@ -203,7 +171,7 @@
               .concat(',')
               .concat(secondSelectedItems[3].item_text.toString())
               .concat(',')
-              .concat(secondSelectedItems[4].item_text.toString())), secondSelectedShortDesc)">Go</button>
+              .concat(secondSelectedItems[4].item_text.toString())), secondSelectedShortDesc)">Go</button> -->
 
           <button class="btn btn-primary" type="button" disabled *ngIf="isLoading">
             <span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
@@ -239,6 +207,7 @@
 <ng-container *ngIf="isError">
   <div class="col-md-12 text-center">
     <h1>{{errorCode}} {{errorNumber}}</h1>
+    <h2 *ngIf="!smartChartData">Please start with a first query</h2>
     <h2>Page Not Found</h2>
     <p>
         The data for this query is not available
@@ -249,19 +218,26 @@
 </ng-container>
 
 <ng-container *ngIf="newUsdaData$ | async as newUsdaData" >
-  <h2 class="pt-5">Data</h2>
+  <h2 class="pt-5">First Query's Data: {{selectedShortDesc}}</h2>
   <table class="table table-bordered ">
     <thead>
       <th>Time period</th>
       <th>Value</th>
+      <th>Domain Category</th>
+      <th>Utilization</th>
+      <th>Production Practice</th>
       <th>Actions</th>
     </thead>
     <tbody>
       <tr *ngFor="let item of newUsdaData">
         <td>{{item.year}} {{item.reference_period_desc}}</td>
-        <td>{{item.value}}</td>
+        <td>{{item.value}} {{item.unit_desc}}</td>
+        <td>{{item.domaincat_desc}}</td>
+        <td>{{item.util_practice_desc}}</td>
+        <td>{{item.prodn_practice_desc}}</td>
         <td>
-          <a class="btn btn-primary">Edit</a>
+          <a class="btn btn-primary mx-1">Edit</a>
+          <a class="btn btn-primary ms-1">Save</a>
         </td>
       </tr>
     </tbody>
@@ -269,7 +245,33 @@
   </table>
 </ng-container>
 
-
+<ng-container *ngIf="secondUsdaData$ | async as secondUsdaData" >
+  <h2 class="pt-5">Second Query's Data: {{secondSelectedShortDesc}}</h2>
+  <table class="table table-bordered ">
+    <thead>
+      <th>Time period</th>
+      <th>Value</th>
+      <th>Domain Category</th>
+      <th>Utilization</th>
+      <th>Production Practice</th>
+      <th>Actions</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of secondUsdaData">
+        <td>{{item.year}} {{item.reference_period_desc}}</td>
+        <td>{{item.value}} {{item.unit_desc}}</td>
+        <td>{{item.domaincat_desc}}</td>
+        <td>{{item.util_practice_desc}}</td>
+        <td>{{item.prodn_practice_desc}}</td>
+        <td>
+          <a class="btn btn-primary mx-1">Edit</a>
+          <a class="btn btn-primary ms-1">Save</a>
+        </td>
+      </tr>
+    </tbody>
+    <button class="btn btn-success mt-3">Export to Excel</button>
+  </table>
+</ng-container>
 
 
 
