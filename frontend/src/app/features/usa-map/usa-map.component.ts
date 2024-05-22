@@ -11,12 +11,12 @@ import * as ChartGeo from "chartjs-chart-geo";
 import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 // const nation = (feature(us, us.objects.nation) as any).features[0];
 // const states = (feature(us, us.objects.states) as any).features;
+//const url = 'https://unpkg.com/world-atlas@2.0.2/countries-50m.json';
 
-const url = 'https://unpkg.com/world-atlas@2.0.2/countries-50m.json';
-
-
+declare var google: any;
 
 @Component({
   selector: 'app-usa-map',
@@ -50,18 +50,119 @@ export class UsaMapComponent {
   public geoChartData = {
     chartType: 'GeoChart',
     data: [
-      ['NJ', 600]
+      ['State', 'Index'],
+      ['US-NJ', '600'],
+      ['US-OK', '600'],
+      ['US-CA', '600'],
+      ['AL', 200],
+      ['AK', 300],
+      ['AZ',400],
+      ['AR', 500],
+      ['US-CA', 100],
+      ['US-CO', '500'],
+      ['US-CT', 100],
+      ['US-DE', 100],
+      ['US-FL', 100],
+      ['US-GA', 100],
+      ['US-HI', 100],
+      ['US-ID', 100],
+      ['US-IL', 100],
+      ['US-IN', 100],
+      ['US-IA', 100],
+      ['US-KS', 100],
+      ['US-KY', 100],
+      ['US-LA', 100],
+      ['US-ME', 100],
+      ['US-MD', 100],
+      ['US-MA', 100],
+      ['US-MI', 100],
+      ['US-MN', 100],
+      ['US-MS', 100],
+      ['US-MO', 100],
+      ['US-MT', 100],
+      ['US-NE', 100],
+      ['US-NV', 100],
+      ['US-NH', 100],
+      ['US-NJ', 100],
+      ['US-NM', 100],
+      ['US-NY', 100],
+      ['US-NC', 100],
+      ['US-ND', 100],
+      ['US-OH', 100],
+      ['US-OK', 100],
+      ['US-OR', 100],
+      ['US-PA', 100],
+      ['US-RI', 100],
+      ['US-SC', 100],
+      ['US-SD', 100],
+      ['US-TN', 100],
+      ['US-TX', 100],
+      ['US-UT', 100],
+      ['US-VT', 100],
+      ['US-VA', 100],
+      ['US-WA', 100],
+      ['US-WV', 100],
+      ['US-WI', 100],
+      ['US-WY', 700]
     ],
     dataTable: [
       ['State', 'Index'],
-      ['Germany', 200],
-      ['Poland', 100],
-      ['Spain', 800],
-      ['UK', 500],
-      ['France', 600],
-      ['RU', 400],
-      ['US-NJ', 600]
-
+      // ['Germany', 200],
+      // ['Poland', 100],
+      // ['Spain', 800],
+      // ['UK', 500],
+      // ['France', 600],
+      // ['RU', 400],
+      ['US-AL', 200],
+      ['US-AK', 300],
+      ['US-AZ',400],
+      ['US-AR', 500],
+      ['US-CA', 100],
+      ['US-CO', 500],
+      ['US-CT', 200],
+      ['US-DE', 300],
+      ['US-FL', 400],
+      ['US-GA', 500],
+      ['US-HI', 600],
+      ['US-ID', 700],
+      ['US-IL', 100],
+      ['US-IN', 200],
+      ['US-IA', 300],
+      ['US-KS', 400],
+      ['US-KY', 500],
+      ['US-LA', 600],
+      ['US-ME', 700],
+      ['US-MD', 200],
+      ['US-MA', 300],
+      ['US-MI', 400],
+      ['US-MN', 500],
+      ['US-MS', 600],
+      ['US-MO', 700],
+      ['US-MT', 800],
+      ['US-NE', 200],
+      ['US-NV', 300],
+      ['US-NH', 400],
+      ['US-NJ', 500],
+      ['US-NM', 600],
+      ['US-NY', 700],
+      ['US-NC', 800],
+      ['US-ND', 200],
+      ['US-OH', 300],
+      ['US-OK', 400],
+      ['US-OR', 500],
+      ['US-PA', 600],
+      ['US-RI', 700],
+      ['US-SC', 800],
+      ['US-SD', 200],
+      ['US-TN', 300],
+      ['US-TX', 400],
+      ['US-UT', 500],
+      ['US-VT', 600],
+      ['US-VA', 700],
+      ['US-WA', 800],
+      ['US-WV', 200],
+      ['US-WI', 300],
+      ['US-WY', 700]
     ],
     options: {
       region: 'US',
@@ -74,6 +175,37 @@ export class UsaMapComponent {
   };
 
   ngOnInit(): void {
+    google.charts.load('current', {
+      // 'packages': ['geochart'],
+      'packages': ['corechart'],
+
+      'mapsApiKey': `${environment.googleApiKey}`
+    });
+    google.charts.setOnLoadCallback(this.drawRegionsMap);
+  }
+
+  drawRegionsMap() {
+    // Create the data table.
+    var data = new google.visualization.DataTable();
+    data.addColumn('string', 'Topping');
+    data.addColumn('number', 'Slices');
+    data.addRows([
+      ['Mushrooms', 3],
+      ['Onions', 1],
+      ['Olives', 1], 
+      ['Zucchini', 1],
+      ['Pepperoni', 2]
+      
+    ]);
+
+    // Set chart options
+    var options = {'title':'How Much Pizza I Ate Last Night',
+                   'width':400,
+                   'height':300};
+
+    // Instantiate and draw our chart, passing in some options.
+    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    chart.draw(data, options);
   }
 
   onItemSelect(item: any) {

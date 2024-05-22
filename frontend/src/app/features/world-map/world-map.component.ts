@@ -31,6 +31,7 @@ export class WorldMapComponent implements OnInit {
   secondSelectedItems: any[] = [];
   secondSelectedItemsString: string = '';
   dropdownSettings: IDropdownSettings = {};
+
   constructor() { }
 
   public geoChartData = {

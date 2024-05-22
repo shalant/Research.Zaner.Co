@@ -354,7 +354,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                 //THIS WORKS
                 // this.RenderChart(this.period, this.value, 'bar', 'barchart');
                 //NEW TRY 153PM Monday
-                debugger
+                
                 this.RenderSmartChart(this.smartChartData, 'bar', this.selectedChart)
               }
               else {
@@ -381,7 +381,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     this.smartChartData2 = [];
     this.isLoading = true;
     // Set Short Description
-    debugger
+    
     switch (this.secondSelectedMetric) {
       case 'AREA PLANTED':
         this.secondSelectedShortDesc = `${secondSelectedCommodity} - ACRES PLANTED`
@@ -495,7 +495,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
               }
               else {
                 console.log('lineChartData:' + this.smartChartData2)
-                debugger
+                
                 this.RenderSecondChart(this.smartChartData2, 'line', 'linechart');
               }
             },
@@ -617,7 +617,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
       console.log('chartLabels:' + chartLabels)
       console.log('chartData:' + this.chartData2)
       console.log('chartYear:' + this.chartYear2)
-      debugger
+      
       this.secondSelectedItems.forEach(x => {
         console.log(x)
         this.TomDataSet.push({
