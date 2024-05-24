@@ -53,7 +53,7 @@ export class UsaMapComponent {
   faScrewdriverWrench = faScrewdriverWrench;
   faPlus = faPlus;
   faMinus = faMinus;
-  stateArray: string = 'TX'
+  isLoading: boolean = false;
 
   dropdownList: any[] = [];
   dropdownList2: any[] = [];
@@ -63,14 +63,20 @@ export class UsaMapComponent {
   secondSelectedItemsString: string = '';
   selectedWeek: string = '';
   selectedYear: string = '';
+  selectedMetric: string = '';
+  selectedCommodity: string = '';
+  selectedShortDesc: string = '';
 
   usdaData$?: Observable<Datum[]>;
+  usdaData5Year$?: Observable<Datum[]>;
   getUsdaSubscription?: Subscription;
+  getUsda5YearSubscription?: Subscription;
 
   customColor: string = '';
   dropdownSettings: IDropdownSettings = {};
   smartChartData: dataSet[] = [];
   mapArray: twoElements[] = [];
+  fiveYearArray: twoElements[] = [];
 
   stateData: dataSet = {
     year: 0,
@@ -210,20 +216,34 @@ export class UsaMapComponent {
   };
 
   ngOnInit(): void {
-    google.charts.load('current', {
-      // 'packages': ['geochart'],
-      'packages': ['corechart'],
+    // google.charts.load('current', {
+    //   // 'packages': ['geochart'],
+    //   'packages': ['corechart'],
 
-      'mapsApiKey': `${environment.googleApiKey}`
-    });
-    google.charts.setOnLoadCallback(this.drawPizzaMap);
+    //   'mapsApiKey': `${environment.googleApiKey}`
+    // });
+    // google.charts.setOnLoadCallback(this.drawPizzaMap);
 
-    google.charts.load('current2', {
-      'packages': ['geochart'],
+    // google.charts.load('current2', {
+    //   'packages': ['geochart'],
 
-      'mapsApiKey': `${environment.googleApiKey}`
-    });
-    google.charts.setOnLoadCallback(this.drawRegionsMap);
+    //   'mapsApiKey': `${environment.googleApiKey}`
+    // });
+    // google.charts.setOnLoadCallback(this.drawRegionsMap);
+  }
+
+  onSelectCommodity(event: Event) {
+    this.selectedCommodity = (event.target as HTMLSelectElement).value;
+    console.log(this.selectedCommodity)
+  }
+
+  onSelectMetric(event: Event) {
+    this.selectedMetric = (event.target as HTMLSelectElement).value;
+    console.log(this.selectedMetric)
+  }
+
+  onSelectYear(event: Event) {
+    this.selectedYear = (event.target as HTMLSelectElement).value;
   }
 
   onItemSelect(item: any) {
@@ -247,34 +267,115 @@ export class UsaMapComponent {
     this.selectedYear.concat(this.selectedItems[0].item_text.toString())
   }
 
-loadData() {
-  try {
-    this.usdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=PROGRESS&Commodity=CORN&Year=2022&short_desc=CORN%20-%20PROGRESS,%20MEASURED%20IN%20PCT%20EMERGED`)
+loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string, selectedWeek: string) {
+  this.smartChartData = [];
+  this.isLoading = true;
+  // Set Short Description
+  debugger
+  switch (this.selectedMetric) {
+    case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
+      this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
+      // make 2nd API for 5-year average?
+      this.usdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}`)
+
     this.getUsdaSubscription = this.usdaData$
     .subscribe({
       next: (response) => {
-        response.forEach(element => {
-          if(element.reference_period_desc == this.selectedWeek) {
-            this.mapArray.push({
-              state_alpha: element.state_alpha,
-              value: parseInt(element.value)
+      }
+    })
+      this.selectedMetric = 'CONDITION'
+      break;
+    case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
+      this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
+        // make 2nd API for 5-year average?
+        // populate a similar array as mapArray
+        // perform subtraction: normal api call - 5yearaverage api call
+        // try coloring data
+      this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}`)
+      //api call is no good
+      this.getUsda5YearSubscription = this.usdaData5Year$
+        .subscribe({
+          next: (response) => {
+            response.forEach(element => {
+              this.fiveYearArray.push({
+                state_alpha: element.state_alpha,
+                value: parseInt(element.value)
+              })
             })
           }
-          this.PopulateData(element);
-        }) 
-      },
-      error: (err: HttpErrorResponse) => {
-          // this.isError = true;
-          // this.isLoading = false;
-          // this.errorCode = err.statusText;
-          // this.errorNumber = err.status
-        }
-      
-      })      
-      } catch (error) {
-        // this.isError = true;
+        })
+        console.log(this.fiveYearArray)
+        this.selectedMetric = 'PROGRESS'
+        break;
+    case 'AREA PLANTED':
+      this.selectedShortDesc = `${selectedCommodity} - ACRES PLANTED`
+      console.log('selected commodity:' + this.selectedCommodity)
+      break;
+    case 'AREA HARVESTED':
+      this.selectedShortDesc = `${this.selectedCommodity} - ACRES HARVESTED`;
+      break;
+    case 'CONDITION':
+      this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, MEASURED IN PCT EXCELLENT`;
+      break;
+    case 'ETHANOL USAGE':
+      this.selectedShortDesc = `CORN, FOR FUEL ALCOHOL - USAGE, MEASURED IN BU`;
+      break;
+    case 'PRODUCTION':
+      if (this.selectedCommodity == 'CORN') {
+        this.selectedShortDesc = `CORN, GRAIN - PRODUCTION, MEASURED IN BU`;
       }
-      console.log(this.smartChartData)
+      else {
+        this.selectedShortDesc = `${selectedCommodity} - PRODUCTION, MEASURED IN BU`;
+      }
+      break;
+    case 'PROGRESS':
+      this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, MEASURED IN PCT EMERGED`;
+      break;
+    case 'RESIDUAL USAGE':
+      this.selectedShortDesc = `CORN, FOR OTHER PRODUCTS (EXCL ALCOHOL) - USAGE, MEASURED IN BU`;
+      break;
+    case 'STOCKS':
+      if (this.selectedCommodity == 'CORN') {
+        this.selectedShortDesc = `CORN, GRAIN - STOCKS, MEASURED IN BU`;
+      }
+      else {
+        this.selectedShortDesc = `${selectedCommodity} - STOCKS, MEASURED IN BU`;
+      }
+      break;
+    default:
+      break;
+  }
+  debugger
+  try {
+    // this.usdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=PROGRESS&Commodity=${this.selectedCommodity}&Year=2022&short_desc=CORN%20-%20PROGRESS,%20MEASURED%20IN%20PCT%20EMERGED`)
+    this.usdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}`)
+
+    this.getUsdaSubscription = this.usdaData$
+      .subscribe({
+        next: (response) => {
+          response.forEach(element => {
+            if(element.reference_period_desc == this.selectedWeek) {
+              this.mapArray.push({
+                state_alpha: element.state_alpha,
+                value: parseInt(element.value)
+              })
+            }
+            this.PopulateData(element);
+          }) 
+          this.isLoading = false;
+        },
+        error: (err: HttpErrorResponse) => {
+            // this.isError = true;
+            this.isLoading = false;
+            // this.errorCode = err.statusText;
+            // this.errorNumber = err.status
+          }
+        
+        })      
+    } catch (error) {
+      // this.isError = true;
+    }
+    console.log(this.smartChartData)
   }
 
 PopulateData(element: Datum) {
@@ -289,125 +390,126 @@ PopulateData(element: Datum) {
   if(element.reference_period_desc == 'WEEK #20') {
     // this.mapArray.push(this.stateData.state_alpha + ' - ' + this.stateData.value)
   }
-  console.log(this.mapArray)
+  console.log(this.stateData)
 }
 
-  drawRegionsMap() {
-    // Create the data table.
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Topping');
-    data.addColumn('number', 'Data');
-    data.addRows([
-      ['US-AL', 200],
-      ['US-AK', 300],
-      ['US-AZ',400],
-      ['US-AR', 500],
-      ['US-CA', 100],
-      ['US-CO', 500],
-      ['US-CT', 200],
-      ['US-DE', 300],
-      ['US-FL', 400],
-      ['US-GA', 500],
-      ['US-HI', 600],
-      ['US-ID', 700],
-      ['US-IL', 100],
-      // ['US-IN', 200],
-      ['US-IN + 3.5%', 700],
-      ['US-IA', 300],
-      ['US-KS', 400],
-      ['US-KY', 500],
-      ['US-LA', 600],
-      ['US-ME', 700],
-      ['US-MD', 200],
-      ['US-MA', 300],
-      ['US-MI', 400],
-      ['US-MN', 500],
-      ['US-MS', 600],
-      ['US-MO', 700],
-      ['US-MT', 800],
-      ['US-NE', 200],
-      ['US-NV', 300],
-      ['US-NH', 400],
-      ['US-NJ', 500],
-      ['US-NM', 600],
-      ['US-NY', 700],
-      ['US-NC', 800],
-      ['US-ND', 200],
-      ['US-OH', 300],
-      ['US-OK', 400],
-      ['US-OR', 500],
-      ['PA - 1.9%', 100],
-      ['US-RI', 700],
-      ['US-SC', 800],
-      ['US-SD', 200],
-      ['US-TN', 300],
-      ['US-TX', 400],
-      ['US-UT', 500],
-      ['US-VT', 600],
-      ['US-VA', 700],
-      ['US-WA', 800],
-      ['US-WV', 200],
-      ['US-WI', 300],
-      ['US-WY', 700]
+}
+  // drawRegionsMap() {
+  //   // Create the data table.
+  //   var data = new google.visualization.DataTable();
+  //   data.addColumn('string', 'Topping');
+  //   data.addColumn('number', 'Data');
+  //   data.addRows([
+  //     ['US-AL', 200],
+  //     ['US-AK', 300],
+  //     ['US-AZ',400],
+  //     ['US-AR', 500],
+  //     ['US-CA', 100],
+  //     ['US-CO', 500],
+  //     ['US-CT', 200],
+  //     ['US-DE', 300],
+  //     ['US-FL', 400],
+  //     ['US-GA', 500],
+  //     ['US-HI', 600],
+  //     ['US-ID', 700],
+  //     ['US-IL', 100],
+  //     // ['US-IN', 200],
+  //     ['US-IN + 3.5%', 700],
+  //     ['US-IA', 300],
+  //     ['US-KS', 400],
+  //     ['US-KY', 500],
+  //     ['US-LA', 600],
+  //     ['US-ME', 700],
+  //     ['US-MD', 200],
+  //     ['US-MA', 300],
+  //     ['US-MI', 400],
+  //     ['US-MN', 500],
+  //     ['US-MS', 600],
+  //     ['US-MO', 700],
+  //     ['US-MT', 800],
+  //     ['US-NE', 200],
+  //     ['US-NV', 300],
+  //     ['US-NH', 400],
+  //     ['US-NJ', 500],
+  //     ['US-NM', 600],
+  //     ['US-NY', 700],
+  //     ['US-NC', 800],
+  //     ['US-ND', 200],
+  //     ['US-OH', 300],
+  //     ['US-OK', 400],
+  //     ['US-OR', 500],
+  //     ['PA - 1.9%', 100],
+  //     ['US-RI', 700],
+  //     ['US-SC', 800],
+  //     ['US-SD', 200],
+  //     ['US-TN', 300],
+  //     ['US-TX', 400],
+  //     ['US-UT', 500],
+  //     ['US-VT', 600],
+  //     ['US-VA', 700],
+  //     ['US-WA', 800],
+  //     ['US-WV', 200],
+  //     ['US-WI', 300],
+  //     ['US-WY', 700]
       
-    ]);
+  //   ]);
+
+  //   // Set chart options
+  //   var options = {
+  //     'title':'USDA Data',
+  //     'region': 'US',
+  //     'resolution': 'provinces',
+  //     'displayMode': 'text',
+  //     // displayMode: 'region',
+  //     defaultColor: 'orange',
+  //     backgroundColor: 'grey',
+  //     toolTip: {
+  //       textStyle: {
+  //         color: '#FF0000'
+  //       }, 
+  //       showColorCode: true,
+  //       trigger: 'focus'
+  //     },
+  //     showTooltip: true,
+  //     showInfoWindow: true,
+  //     // colorAxis: {colors: ['#e7711c', '#4374e0']},
+  //     colorAxis: {colors: ['red', 'green']},
+  //     legend: {
+  //       textStyle: {
+  //         // color: 'blue',
+  //         fontSize: 16
+  //       }
+  //     }
+  //   };
+
+  //   // Instantiate and draw our chart, passing in some options.
+  //   var chart = new google.visualization.GeoChart(document.getElementById('USDA-map'));
+  //   chart.draw(data, options);
+  // }
+
+  // drawPizzaMap() {
+  //   // Create the data table.
+  //   var data = new google.visualization.DataTable();
+  //   data.addColumn('string', 'Topping');
+  //   data.addColumn('number', 'Slices');
+  //   data.addRows([
+  //     ['Mushrooms', 3],
+  //     ['Onions', 1],
+  //     ['Olives', 1], 
+  //     ['Zucchini', 1],
+  //     ['Pepperoni', 2]
+      
+  //   ]);
 
     // Set chart options
-    var options = {
-      'title':'USDA Data',
-      'region': 'US',
-      'resolution': 'provinces',
-      'displayMode': 'text',
-      // displayMode: 'region',
-      defaultColor: 'orange',
-      backgroundColor: 'grey',
-      toolTip: {
-        textStyle: {
-          color: '#FF0000'
-        }, 
-        showColorCode: true,
-        trigger: 'focus'
-      },
-      showTooltip: true,
-      showInfoWindow: true,
-      // colorAxis: {colors: ['#e7711c', '#4374e0']},
-      colorAxis: {colors: ['red', 'green']},
-      legend: {
-        textStyle: {
-          // color: 'blue',
-          fontSize: 16
-        }
-      }
-    };
+  //   var options = {'title':'How Much Pizza I Ate Last Night',
+  //                  'width':400,
+  //                  'height':300};
 
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.GeoChart(document.getElementById('USDA-map'));
-    chart.draw(data, options);
-  }
-
-  drawPizzaMap() {
-    // Create the data table.
-    var data = new google.visualization.DataTable();
-    data.addColumn('string', 'Topping');
-    data.addColumn('number', 'Slices');
-    data.addRows([
-      ['Mushrooms', 3],
-      ['Onions', 1],
-      ['Olives', 1], 
-      ['Zucchini', 1],
-      ['Pepperoni', 2]
-      
-    ]);
-
-    // Set chart options
-    var options = {'title':'How Much Pizza I Ate Last Night',
-                   'width':400,
-                   'height':300};
-
-    // Instantiate and draw our chart, passing in some options.
-    var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-    chart.draw(data, options);
-  }
+  //   // Instantiate and draw our chart, passing in some options.
+  //   var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+  //   chart.draw(data, options);
+  // }
 
   // onItemSelect(item: any) {
   //   this.selectedItems.push(item);
@@ -415,127 +517,127 @@ PopulateData(element: Datum) {
   //   console.log(this.selectedItemsString)
   // }
 
-  onSelectAll(items: any) {
-    this.selectedItems.push(...items)
-  }
+//   onSelectAll(items: any) {
+//     this.selectedItems.push(...items)
+//   }
 
-  onDeselect(item: any) {
-    this.selectedItems.filter((value, index, arr) => {
-      if (value == item) {
-        arr.splice(index, 1);
-        return true;
-      }
-      return false;
-    })
-  }
+//   onDeselect(item: any) {
+//     this.selectedItems.filter((value, index, arr) => {
+//       if (value == item) {
+//         arr.splice(index, 1);
+//         return true;
+//       }
+//       return false;
+//     })
+//   }
 
-  onDeselectAll(items: any) {
-    this.selectedItems = [];
-  }
+//   onDeselectAll(items: any) {
+//     this.selectedItems = [];
+//   }
 
-  isPosOrNeg(stateNumber: number) {
-    if (this.labelData[stateNumber].charAt(3) == '+') {
-      this.customColor = 'green';
-    }
-    else {
-      this.customColor = 'red';
-    }
-  }
+//   isPosOrNeg(stateNumber: number) {
+//     if (this.labelData[stateNumber].charAt(3) == '+') {
+//       this.customColor = 'green';
+//     }
+//     else {
+//       this.customColor = 'red';
+//     }
+//   }
 
-  labelDataOld = [12, 14, 3, 19]
-  labelData = [
-    'AL - 2%',
-    'AK - 3%',
-    'AZ - 4.3%',
-    'AR + 5%',
-    'CA + 1%',
-    'CO + 5%',
-    'CT + 2%',
-    'DE - 3%',
-    'FL + 4%',
-    'GA + 5%',
-    'HI + 6%',
-    'ID + 7%',
-    'IL + 1%',
-    'IN + 2%',
-    'IA + 3%',
-    'KS + 4%',
-    'KY + 5%',
-    'LA + 6%',
-    'ME + 7%',
-    'MD + 2%',
-    'MA + 3%',
-    'MI + 4%',
-    'MN + 5%',
-    'MS + 6%',
-    'MO + 7%',
-    'MT + 8%',
-    'NE + 2%',
-    'NV + 3%',
-    'NH + 4%',
-    'NJ + 5%',
-    'NM + 6%',
-    'NY + 7%',
-    'NC + 8%',
-    'ND + 2%',
-    'OH + 3%',
-    'OK + 4%',
-    'OR + 5%',
-    'PA + 6%',
-    'RI + 7%',
-    'SC + 8%',
-    'SD + 2%',
-    'TN + 3%',
-    'TX 4 4%',
-    'UT + 5%',
-    'VT + 6%',
-    'VA + 7%',
-    'WA + 8%',
-    'WV - 2%',
-    'WI + 3%',
-    'WY + 7%'
-    ]
-  colorArray = ['red', 'green']
-  myChart: any = '';
-  countryChart!: Partial<ChartOptions>
-  geoData: any;
+//   labelDataOld = [12, 14, 3, 19]
+//   labelData = [
+//     'AL - 2%',
+//     'AK - 3%',
+//     'AZ - 4.3%',
+//     'AR + 5%',
+//     'CA + 1%',
+//     'CO + 5%',
+//     'CT + 2%',
+//     'DE - 3%',
+//     'FL + 4%',
+//     'GA + 5%',
+//     'HI + 6%',
+//     'ID + 7%',
+//     'IL + 1%',
+//     'IN + 2%',
+//     'IA + 3%',
+//     'KS + 4%',
+//     'KY + 5%',
+//     'LA + 6%',
+//     'ME + 7%',
+//     'MD + 2%',
+//     'MA + 3%',
+//     'MI + 4%',
+//     'MN + 5%',
+//     'MS + 6%',
+//     'MO + 7%',
+//     'MT + 8%',
+//     'NE + 2%',
+//     'NV + 3%',
+//     'NH + 4%',
+//     'NJ + 5%',
+//     'NM + 6%',
+//     'NY + 7%',
+//     'NC + 8%',
+//     'ND + 2%',
+//     'OH + 3%',
+//     'OK + 4%',
+//     'OR + 5%',
+//     'PA + 6%',
+//     'RI + 7%',
+//     'SC + 8%',
+//     'SD + 2%',
+//     'TN + 3%',
+//     'TX 4 4%',
+//     'UT + 5%',
+//     'VT + 6%',
+//     'VA + 7%',
+//     'WA + 8%',
+//     'WV - 2%',
+//     'WI + 3%',
+//     'WY + 7%'
+//     ]
+//   colorArray = ['red', 'green']
+//   myChart: any = '';
+//   countryChart!: Partial<ChartOptions>
+//   geoData: any;
 
-  regions: any = {
-    "IL": 1,
-    "TX": 1
-  }
-  seriesData = {
-    'US-CA': 11100,   // Canada
-    'US-IL': 2510,    // Germany
-    'US-NY': 3710,    // France
-    'US-TX': 5710,    // Australia
-    'US-CO': 8310,    // Great Britain
-  };
-  readonly title = "Chart.js Geo + Angular";
+//   regions: any = {
+//     "IL": 1,
+//     "TX": 1
+//   }
+//   seriesData = {
+//     'US-CA': 11100,   // Canada
+//     'US-IL': 2510,    // Germany
+//     'US-NY': 3710,    // France
+//     'US-TX': 5710,    // Australia
+//     'US-CO': 8310,    // Great Britain
+//   };
+//   readonly title = "Chart.js Geo + Angular";
 
-  readonly geoChartType = "choropleth";
-  readonly geoChartLegend = false;
-  readonly geoChartOptions = {
-    responsive: true,
-    // We use these empty structures as placeholders for dynamic theming.
-    scale: {
-      projection: "albersUsa"
-    } as any,
-    geo: {
-      colorScale: {
-        display: true,
-        position: "bottom",
-        quantize: 5,
-        legend: {
-          position: "bottom-right"
-        }
-      }
-    },
+//   readonly geoChartType = "choropleth";
+//   readonly geoChartLegend = false;
+//   readonly geoChartOptions = {
+//     responsive: true,
+//     // We use these empty structures as placeholders for dynamic theming.
+//     scale: {
+//       projection: "albersUsa"
+//     } as any,
+//     geo: {
+//       colorScale: {
+//         display: true,
+//         position: "bottom",
+//         quantize: 5,
+//         legend: {
+//           position: "bottom-right"
+//         }
+//       }
+//     },
     
     
-  };
+//   };
 
-
+// }
 
   // readonly geoChartLabels: Label[] = states.map(d => d.properties.name);
   // readonly geoColors = states.map(() => ({}));
@@ -547,7 +649,7 @@ PopulateData(element: Datum) {
       //   feature: d,
       //   value: Math.random() * 10
       // }))
-    }
+   
   // ];
 
 
