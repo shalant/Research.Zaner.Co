@@ -10,8 +10,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { Feature, topojson } from 'chartjs-chart-geo';
 // import { Label } from "ng2-charts";
 import { feature } from 'topojson-client';
-import * as ChartGeo from "chartjs-chart-geo";
-import { Ng2GoogleChartsModule } from 'ng2-google-charts';
+// import * as ChartGeo from "chartjs-chart-geo";
+// import { Ng2GoogleChartsModule } from 'ng2-google-charts';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
@@ -39,7 +39,6 @@ interface twoElements {
   standalone: true,
   imports: [
     FontAwesomeModule, 
-    Ng2GoogleChartsModule, 
     NgMultiSelectDropDownModule,
     FormsModule,
     FontAwesomeModule,
@@ -85,151 +84,11 @@ export class UsaMapComponent {
     state_alpha: ''
   };
 
+  colorArray = ['red', 'green']
+
   constructor(private http: HttpClient) { }
 
-  public geoChartData = {
-    chartType: 'GeoChart',
-    data: [
-      ['State', 'Index'],
-      ['US-NJ', '600'],
-      ['US-OK', '600'],
-      ['US-CA', '600'],
-      ['AL', 200],
-      ['AK', 300],
-      ['AZ',400],
-      ['AR', 500],
-      ['US-CA', 100],
-      ['US-CO', '500'],
-      ['US-CT', 100],
-      ['US-DE', 100],
-      ['US-FL', 100],
-      ['US-GA', 100],
-      ['US-HI', 100],
-      ['US-ID', 100],
-      ['US-IL', 100],
-      ['US-IN', 100],
-      ['US-IA', 100],
-      ['US-KS', 100],
-      ['US-KY', 100],
-      ['US-LA', 100],
-      ['US-ME', 100],
-      ['US-MD', 100],
-      ['US-MA', 100],
-      ['US-MI', 100],
-      ['US-MN', 100],
-      ['US-MS', 100],
-      ['US-MO', 100],
-      ['US-MT', 100],
-      ['US-NE', 100],
-      ['US-NV', 100],
-      ['US-NH', 100],
-      ['US-NJ', 100],
-      ['US-NM', 100],
-      ['US-NY', 100],
-      ['US-NC', 100],
-      ['US-ND', 100],
-      ['US-OH', 100],
-      ['US-OK', 100],
-      ['US-OR', 100],
-      ['US-PA', 100],
-      ['US-RI', 100],
-      ['US-SC', 100],
-      ['US-SD', 100],
-      ['US-TN', 100],
-      ['US-TX', 100],
-      ['US-UT', 100],
-      ['US-VT', 100],
-      ['US-VA', 100],
-      ['US-WA', 100],
-      ['US-WV', 100],
-      ['US-WI', 100],
-      ['US-WY', 700]
-    ],
-    dataTable: [
-      ['State', 'Index'],
-      // ['Germany', 200],
-      // ['Poland', 100],
-      // ['Spain', 800],
-      // ['UK', 500],
-      // ['France', 600],
-      // ['RU', 400],
-      ['US-AL', 200],
-      ['US-AK', 300],
-      ['US-AZ',400],
-      ['US-AR', 500],
-      ['US-CA', 100],
-      ['US-CO', 500],
-      ['US-CT', 200],
-      ['US-DE', 300],
-      ['US-FL', 400],
-      ['US-GA', 500],
-      ['US-HI', 600],
-      ['US-ID', 700],
-      ['US-IL', 100],
-      ['US-IN', 200],
-      ['US-IA', 300],
-      ['US-KS', 400],
-      ['US-KY', 500],
-      ['US-LA', 600],
-      ['US-ME', 700],
-      ['US-MD', 200],
-      ['US-MA', 300],
-      ['US-MI', 400],
-      ['US-MN', 500],
-      ['US-MS', 600],
-      ['US-MO', 700],
-      ['US-MT', 800],
-      ['US-NE', 200],
-      ['US-NV', 300],
-      ['US-NH', 400],
-      ['US-NJ', 500],
-      ['US-NM', 600],
-      ['US-NY', 700],
-      ['US-NC', 800],
-      ['US-ND', 200],
-      ['US-OH', 300],
-      ['US-OK', 400],
-      ['US-OR', 500],
-      ['US-PA', 600],
-      ['US-RI', 700],
-      ['US-SC', 800],
-      ['US-SD', 200],
-      ['US-TN', 300],
-      ['US-TX', 400],
-      ['US-UT', 500],
-      ['US-VT', 600],
-      ['US-VA', 700],
-      ['US-WA', 800],
-      ['US-WV', 200],
-      ['US-WI', 300],
-      ['US-WY', 700]
-    ],
-    options: {
-      region: 'US',
-      'colorAxis': { 'colors': ['#005F60', '#008083', '#249EA0', '#FAAB36', '#F78104', '#FD5901'] },
-      // 'width': 700,
-      // 'height': 600,
-      resolution: 'provinces',
-      displayMode: 'text'
-    },
-    
-  };
-
   ngOnInit(): void {
-    // google.charts.load('current', {
-    //   // 'packages': ['geochart'],
-    //   'packages': ['corechart'],
-
-    //   'mapsApiKey': `${environment.googleApiKey}`
-    // });
-    // google.charts.setOnLoadCallback(this.drawPizzaMap);
-
-    // google.charts.load('current2', {
-    //   'packages': ['geochart'],
-
-    //   'mapsApiKey': `${environment.googleApiKey}`
-    // });
-    // google.charts.setOnLoadCallback(this.drawRegionsMap);
   }
 
   onSelectCommodity(event: Event) {
@@ -269,6 +128,7 @@ export class UsaMapComponent {
 
 loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string, selectedWeek: string) {
   this.smartChartData = [];
+  this.mapArray = [];
   this.isLoading = true;
   // Set Short Description
   debugger
@@ -342,6 +202,14 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
         this.selectedShortDesc = `${selectedCommodity} - STOCKS, MEASURED IN BU`;
       }
       break;
+    case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
+      this.selectedShortDesc = `${selectedCommodity} - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
+      // selectedMetric = 'CONDITION'
+      break;
+    case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED':
+      this.selectedShortDesc = `${selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED`;
+      selectedMetric = 'PROGRESS'
+      break;
     default:
       break;
   }
@@ -353,6 +221,7 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
     this.getUsdaSubscription = this.usdaData$
       .subscribe({
         next: (response) => {
+          debugger
           response.forEach(element => {
             if(element.reference_period_desc == this.selectedWeek) {
               this.mapArray.push({
@@ -375,7 +244,8 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
     } catch (error) {
       // this.isError = true;
     }
-    console.log(this.smartChartData)
+    
+
   }
 
 PopulateData(element: Datum) {
@@ -390,10 +260,24 @@ PopulateData(element: Datum) {
   if(element.reference_period_desc == 'WEEK #20') {
     // this.mapArray.push(this.stateData.state_alpha + ' - ' + this.stateData.value)
   }
-  console.log(this.stateData)
+  console.log('stateData: ' + this.stateData.state_alpha)
+  console.log("smartChartData:" + this.smartChartData)
+    console.log("mapArray:" + this.mapArray)
 }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
   // drawRegionsMap() {
   //   // Create the data table.
   //   var data = new google.visualization.DataTable();
@@ -937,3 +821,130 @@ PopulateData(element: Datum) {
   //   }
   // }
 
+  // public geoChartData = {
+  //   chartType: 'GeoChart',
+  //   data: [
+  //     ['State', 'Index'],
+  //     ['US-NJ', '600'],
+  //     ['US-OK', '600'],
+  //     ['US-CA', '600'],
+  //     ['AL', 200],
+  //     ['AK', 300],
+  //     ['AZ',400],
+  //     ['AR', 500],
+  //     ['US-CA', 100],
+  //     ['US-CO', '500'],
+  //     ['US-CT', 100],
+  //     ['US-DE', 100],
+  //     ['US-FL', 100],
+  //     ['US-GA', 100],
+  //     ['US-HI', 100],
+  //     ['US-ID', 100],
+  //     ['US-IL', 100],
+  //     ['US-IN', 100],
+  //     ['US-IA', 100],
+  //     ['US-KS', 100],
+  //     ['US-KY', 100],
+  //     ['US-LA', 100],
+  //     ['US-ME', 100],
+  //     ['US-MD', 100],
+  //     ['US-MA', 100],
+  //     ['US-MI', 100],
+  //     ['US-MN', 100],
+  //     ['US-MS', 100],
+  //     ['US-MO', 100],
+  //     ['US-MT', 100],
+  //     ['US-NE', 100],
+  //     ['US-NV', 100],
+  //     ['US-NH', 100],
+  //     ['US-NJ', 100],
+  //     ['US-NM', 100],
+  //     ['US-NY', 100],
+  //     ['US-NC', 100],
+  //     ['US-ND', 100],
+  //     ['US-OH', 100],
+  //     ['US-OK', 100],
+  //     ['US-OR', 100],
+  //     ['US-PA', 100],
+  //     ['US-RI', 100],
+  //     ['US-SC', 100],
+  //     ['US-SD', 100],
+  //     ['US-TN', 100],
+  //     ['US-TX', 100],
+  //     ['US-UT', 100],
+  //     ['US-VT', 100],
+  //     ['US-VA', 100],
+  //     ['US-WA', 100],
+  //     ['US-WV', 100],
+  //     ['US-WI', 100],
+  //     ['US-WY', 700]
+  //   ],
+  //   dataTable: [
+  //     ['State', 'Index'],
+  //     // ['Germany', 200],
+  //     // ['Poland', 100],
+  //     // ['Spain', 800],
+  //     // ['UK', 500],
+  //     // ['France', 600],
+  //     // ['RU', 400],
+  //     ['US-AL', 200],
+  //     ['US-AK', 300],
+  //     ['US-AZ',400],
+  //     ['US-AR', 500],
+  //     ['US-CA', 100],
+  //     ['US-CO', 500],
+  //     ['US-CT', 200],
+  //     ['US-DE', 300],
+  //     ['US-FL', 400],
+  //     ['US-GA', 500],
+  //     ['US-HI', 600],
+  //     ['US-ID', 700],
+  //     ['US-IL', 100],
+  //     ['US-IN', 200],
+  //     ['US-IA', 300],
+  //     ['US-KS', 400],
+  //     ['US-KY', 500],
+  //     ['US-LA', 600],
+  //     ['US-ME', 700],
+  //     ['US-MD', 200],
+  //     ['US-MA', 300],
+  //     ['US-MI', 400],
+  //     ['US-MN', 500],
+  //     ['US-MS', 600],
+  //     ['US-MO', 700],
+  //     ['US-MT', 800],
+  //     ['US-NE', 200],
+  //     ['US-NV', 300],
+  //     ['US-NH', 400],
+  //     ['US-NJ', 500],
+  //     ['US-NM', 600],
+  //     ['US-NY', 700],
+  //     ['US-NC', 800],
+  //     ['US-ND', 200],
+  //     ['US-OH', 300],
+  //     ['US-OK', 400],
+  //     ['US-OR', 500],
+  //     ['US-PA', 600],
+  //     ['US-RI', 700],
+  //     ['US-SC', 800],
+  //     ['US-SD', 200],
+  //     ['US-TN', 300],
+  //     ['US-TX', 400],
+  //     ['US-UT', 500],
+  //     ['US-VT', 600],
+  //     ['US-VA', 700],
+  //     ['US-WA', 800],
+  //     ['US-WV', 200],
+  //     ['US-WI', 300],
+  //     ['US-WY', 700]
+  //   ],
+  //   options: {
+  //     region: 'US',
+  //     'colorAxis': { 'colors': ['#005F60', '#008083', '#249EA0', '#FAAB36', '#F78104', '#FD5901'] },
+  //     // 'width': 700,
+  //     // 'height': 600,
+  //     resolution: 'provinces',
+  //     displayMode: 'text'
+  //   },
+    
+  // };

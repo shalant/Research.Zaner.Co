@@ -47,6 +47,9 @@
             value="PROGRESS">Progress - Emerged</option>
           <option *ngIf="selectedCommodity == 'CORN'" value="RESIDUAL USAGE">Residual Usage</option>
           <option  value="STOCKS">Stocks</option>
+          <!-- <option value="CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT">CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT</option> -->
+          <option value="PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED">PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED</option>
+          <option value="CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT">CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT</option>
         </select>
         <ng-multiselect-dropdown class="col-sm me-1 multi-dropdown"
           [placeholder]="'Year'"
@@ -120,6 +123,8 @@
             value="PROGRESS">Progress - Emerged</option>
           <option *ngIf="secondSelectedCommodity == 'CORN'" value="RESIDUAL USAGE">Residual Usage</option>
           <option  value="STOCKS">Stocks</option>
+          <option value="PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED">PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED</option>
+          <option value="CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT">CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT</option>
         </select>
         <ng-multiselect-dropdown class="col-sm me-1 multi-dropdown"
           [placeholder]="'Year'"

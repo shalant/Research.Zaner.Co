@@ -226,6 +226,7 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
   }
 
   loadDataWithParams(selectedMetric: string, selectedCommodity: string, selectedYear: any[], selectedShortDesc: string): void {
+    debugger
     let selectedYearsString: string = selectedYear.map(x=> x.item_text.toString()).join(',');
 
     this.smartChartData = [];
@@ -268,6 +269,15 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
           this.selectedShortDesc = `${selectedCommodity} - STOCKS, MEASURED IN BU`;
         }
         break;
+        debugger
+      case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
+        this.selectedShortDesc = `${selectedCommodity} - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
+        // selectedMetric = 'CONDITION'
+        break;
+      case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED':
+        this.selectedShortDesc = `${selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED`;
+        selectedMetric = 'PROGRESS'
+        break;
       default:
         break;
     }
@@ -281,10 +291,12 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
     }
     if (this.myChart !== '') {
       this.myChart.destroy();
-      this.value = [];
-      this.period = [];
+      //TODO: make sure correct values are reset
+      this.smartChartData = [];
+      // this.value = [];
+      // this.period = [];
     }
-    console.log(selectedMetric, selectedCommodity, selectedYear, selectedShortDesc);
+    console.log(selectedMetric, selectedCommodity, selectedYear, this.selectedShortDesc);
     if (this.isValidQuery) {
       this.setSelectedYear();
       try {
@@ -342,6 +354,10 @@ export class UsdaDataComponent implements OnInit, OnDestroy {
                     if (element.domaincat_desc == 'NOT SPECIFIED') {
                       this.PopulateData(element);
                     }
+                    break;
+                  case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
+                    // this.selectedShortDesc = 'CORN - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT'
+                    this.PopulateData(element)
                     break;
                   default:
                     console.log('Bad query')
