@@ -202,24 +202,41 @@
   }
 
   path:hover {
-    fill: greenyellow;
+    fill: green;
     stroke: red;
     stroke-width: 3px;
     transition: fill 0.4s ease-in-out;
   }
 
   .svg-color {
+    color: green;
+  }
+
+  .positive-green {
+    color: green;
+  }
+
+  .negative-red {
     color: red;
   }
 
-  #WY {
+  /* #WY {
     fill: rgba(129, 133, 137, 0.7);
-  }
+  } */
 
-  #WY:hover {
+  /* #WY:hover {
+    fill: blue;
+  } */
+
+  /* #AL {
+    fill: orangered;
+  } */
+
+  .svg-change-color {
     fill: blue;
   }
 
-  #AL {
-    fill: orangered;
+  svg {
+    width: 90%;
+    height: 90%;
   }

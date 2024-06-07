@@ -15,7 +15,7 @@ import { feature } from 'topojson-client';
 import { IDropdownSettings, NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { FormsModule } from '@angular/forms';
 import { environment } from '../../../environments/environment';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, map } from 'rxjs';
 import { Datum } from '../models/usdainfo.model';
 // const nation = (feature(us, us.objects.nation) as any).features[0];
 // const states = (feature(us, us.objects.states) as any).features;
@@ -77,6 +77,10 @@ export class UsaMapComponent {
   mapArray: twoElements[] = [];
   fiveYearArray: twoElements[] = [];
 
+  variableColor:string = "green"
+  testValue1:number = 5;
+  testValue2:number = -5;
+
   stateData: dataSet = {
     year: 0,
     value: 0,
@@ -129,6 +133,7 @@ export class UsaMapComponent {
 loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string, selectedWeek: string) {
   this.smartChartData = [];
   this.mapArray = [];
+  this.fiveYearArray = [];
   this.isLoading = true;
   // Set Short Description
   debugger
@@ -145,17 +150,18 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
     })
       this.selectedMetric = 'CONDITION'
       break;
-    case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
-      this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
+    case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED':
+      this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED`;
         // make 2nd API for 5-year average?
         // populate a similar array as mapArray
         // perform subtraction: normal api call - 5yearaverage api call
         // try coloring data
-      this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}`)
+      this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetProgressVsAverage?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}&week=WEEK%20%2323`)
       //api call is no good
       this.getUsda5YearSubscription = this.usdaData5Year$
         .subscribe({
           next: (response) => {
+            debugger
             response.forEach(element => {
               this.fiveYearArray.push({
                 state_alpha: element.state_alpha,
@@ -245,7 +251,9 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
       // this.isError = true;
     }
     
-
+    console.log("mapArray[0]: " + this.mapArray[0])
+    console.log("fiveyeararray[0]: " + this.fiveYearArray[0])
+    // document.getElementById("AL")?.classList.add("svg-change-color")
   }
 
 PopulateData(element: Datum) {
@@ -257,14 +265,40 @@ PopulateData(element: Datum) {
     state_alpha: element.state_alpha
   }
   this.smartChartData.push(this.stateData)
-  if(element.reference_period_desc == 'WEEK #20') {
-    // this.mapArray.push(this.stateData.state_alpha + ' - ' + this.stateData.value)
+  if(element.reference_period_desc == this.selectedWeek) {
+    // this.mapArray.push(this.stateData.state_alpha + ' - ' + parseInt(this.stateData.value))
+    // this.mapArray.push({
+    //   state_alpha: element.state_alpha,
+    //   value: parseInt(element.value)
+    // })
+    
   }
-  console.log('stateData: ' + this.stateData.state_alpha)
-  console.log("smartChartData:" + this.smartChartData)
-    console.log("mapArray:" + this.mapArray)
+  // console.log('stateData: ' + this.stateData.state_alpha)
+  // console.log("smartChartData:" + this.smartChartData)
+  //   console.log("mapArray:" + this.mapArray)
 }
 
+getDataForState(stateName: string) {
+  return this.fiveYearArray.find((value, index, array) => {
+    return value.state_alpha == stateName;
+  })
+}
+
+getDataForStateSingleYear(stateName: string) {
+  return this.mapArray.find((value, index, array) => {
+    return value.state_alpha == stateName;
+  })
+}
+
+getColorForState(stateName:string) {
+  var state = this.getDataForState(stateName);
+  if (state) {
+    return state.value < 0 ? "red" : "green";
+  }
+  return "";
+}
+
+
 }
 
 
@@ -277,6 +311,63 @@ PopulateData(element: Datum) {
 
 
 
+// changeColor() {
+//   var colorChangeAR = document.getElementById("AR");
+//   colorChangeAR!.setAttribute("fill", (this.fiveYearArray[1].value > 1) ? "green" : "red");
+//   // colorChangeMap.("fill").
+//   document.getElementById("AL")?.setAttribute("fill", (this.fiveYearArray[0].value > 0) ? "green" : "red");
+//   document.getElementById("AK")?.setAttribute("fill", (this.fiveYearArray[1].value > 0) ? "green" : "red");
+//   document.getElementById("AR")?.setAttribute("fill", (this.fiveYearArray[2].value > 0) ? "green" : "red");
+//   document.getElementById("AZ")?.setAttribute("fill", (this.fiveYearArray[3].value > 0) ? "green" : "red");
+//   document.getElementById("CA")?.setAttribute("fill", (this.fiveYearArray[4].value > 0) ? "green" : "red");
+//   document.getElementById("CO")?.setAttribute("fill", (this.fiveYearArray[5].value > 0) ? "green" : "red");
+//   document.getElementById("CT")?.setAttribute("fill", (this.fiveYearArray[6].value > 0) ? "green" : "red");
+//   document.getElementById("DE")?.setAttribute("fill", (this.fiveYearArray[7].value > 0) ? "green" : "red");
+//   document.getElementById("FL")?.setAttribute("fill", (this.fiveYearArray[8].value > 0) ? "green" : "red");
+//   document.getElementById("GA")?.setAttribute("fill", (this.fiveYearArray[9].value > 0) ? "green" : "red");
+//   document.getElementById("HI")?.setAttribute("fill", (this.fiveYearArray[10].value > 0) ? "green" : "red");
+//   document.getElementById("IA")?.setAttribute("fill", (this.fiveYearArray[11].value > 0) ? "green" : "red");
+//   document.getElementById("ID")?.setAttribute("fill", (this.fiveYearArray[12].value > 0) ? "green" : "red");
+//   document.getElementById("IL")?.setAttribute("fill", (this.fiveYearArray[13].value > 0) ? "green" : "red");
+//   document.getElementById("IN")?.setAttribute("fill", (this.fiveYearArray[14].value > 0) ? "green" : "red");
+//   document.getElementById("KS")?.setAttribute("fill", (this.fiveYearArray[15].value > 0) ? "green" : "red");
+//   document.getElementById("KY")?.setAttribute("fill", (this.fiveYearArray[16].value > 0) ? "green" : "red");
+//   document.getElementById("LA")?.setAttribute("fill", (this.fiveYearArray[17].value > 0) ? "green" : "red");
+//   document.getElementById("MA")?.setAttribute("fill", (this.fiveYearArray[18].value > 0) ? "green" : "red");
+//   document.getElementById("MD")?.setAttribute("fill", (this.fiveYearArray[19].value > 0) ? "green" : "red");
+//   document.getElementById("ME")?.setAttribute("fill", (this.fiveYearArray[20].value > 0) ? "green" : "red");
+//   document.getElementById("MI")?.setAttribute("fill", (this.fiveYearArray[21].value > 0) ? "green" : "red");
+//   document.getElementById("MN")?.setAttribute("fill", (this.fiveYearArray[22].value > 0) ? "green" : "red");
+//   document.getElementById("MO")?.setAttribute("fill", (this.fiveYearArray[23].value > 0) ? "green" : "red");
+//   document.getElementById("MS")?.setAttribute("fill", (this.fiveYearArray[24].value > 0) ? "green" : "red");
+//   document.getElementById("MT")?.setAttribute("fill", (this.fiveYearArray[25].value > 0) ? "green" : "red");
+//   document.getElementById("NC")?.setAttribute("fill", (this.fiveYearArray[26].value > 0) ? "green" : "red");
+//   document.getElementById("ND")?.setAttribute("fill", (this.fiveYearArray[27].value > 0) ? "green" : "red");
+//   document.getElementById("NE")?.setAttribute("fill", (this.fiveYearArray[28].value > 0) ? "green" : "red");
+//   document.getElementById("NH")?.setAttribute("fill", (this.fiveYearArray[29].value > 0) ? "green" : "red");
+//   document.getElementById("NJ")?.setAttribute("fill", (this.fiveYearArray[30].value > 0) ? "green" : "red");
+//   document.getElementById("NM")?.setAttribute("fill", (this.fiveYearArray[31].value > 0) ? "green" : "red");
+//   document.getElementById("NV")?.setAttribute("fill", (this.fiveYearArray[32].value > 0) ? "green" : "red");
+//   document.getElementById("NY")?.setAttribute("fill", (this.fiveYearArray[33].value > 0) ? "green" : "red");
+//   document.getElementById("OH")?.setAttribute("fill", (this.fiveYearArray[34].value > 0) ? "green" : "red");
+//   document.getElementById("OK")?.setAttribute("fill", (this.fiveYearArray[35].value > 0) ? "green" : "red");
+//   document.getElementById("OR")?.setAttribute("fill", (this.fiveYearArray[36].value > 0) ? "green" : "red");
+//   document.getElementById("PA")?.setAttribute("fill", (this.fiveYearArray[37].value > 0) ? "green" : "red");
+//   document.getElementById("RI")?.setAttribute("fill", (this.fiveYearArray[38].value > 0) ? "green" : "red");
+//   document.getElementById("SC")?.setAttribute("fill", (this.fiveYearArray[39].value > 0) ? "green" : "red");
+//   document.getElementById("SD")?.setAttribute("fill", (this.fiveYearArray[40].value > 0) ? "green" : "red");
+//   document.getElementById("TN")?.setAttribute("fill", (this.fiveYearArray[41].value > 0) ? "green" : "red");
+//   document.getElementById("TX")?.setAttribute("fill", (this.fiveYearArray[42].value > 0) ? "green" : "red");
+//   document.getElementById("UT")?.setAttribute("fill", (this.fiveYearArray[43].value > 0) ? "green" : "red");
+//   document.getElementById("VA")?.setAttribute("fill", (this.fiveYearArray[44].value > 0) ? "green" : "red");
+//   document.getElementById("VT")?.setAttribute("fill", (this.fiveYearArray[45].value > 0) ? "green" : "red");
+//   document.getElementById("WA")?.setAttribute("fill", (this.fiveYearArray[46].value > 0) ? "green" : "red");
+//   document.getElementById("WI")?.setAttribute("fill", (this.fiveYearArray[47].value > 0) ? "green" : "red");
+//   document.getElementById("WV")?.setAttribute("fill", (this.fiveYearArray[48].value > 0) ? "green" : "red");
+//   document.getElementById("WY")?.setAttribute("fill", (this.fiveYearArray[49].value > 0) ? "green" : "red");
+  
+
+// }
 
   // drawRegionsMap() {
   //   // Create the data table.
