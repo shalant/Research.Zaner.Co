@@ -137,26 +137,19 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
   this.isLoading = true;
   // Set Short Description
   debugger
-  switch (this.selectedMetric) {
-    case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
-      this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
-      // make 2nd API for 5-year average?
-      this.usdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}`)
+  switch (this.selectedMetric.substring(0,9)) {
+    case 'CONDITION':
+    // case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
+    if (selectedCommodity == 'WHEAT') {
+      this.selectedShortDesc = `${this.selectedCommodity}, WINTER - ${this.selectedMetric}`;
+    }
+    else {
+      this.selectedShortDesc = `${this.selectedCommodity} - ${this.selectedMetric}`;
+    }
+      // this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
 
-    this.getUsdaSubscription = this.usdaData$
-    .subscribe({
-      next: (response) => {
-      }
-    })
-      this.selectedMetric = 'CONDITION'
-      break;
-    case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED':
-      this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED`;
-        // make 2nd API for 5-year average?
-        // populate a similar array as mapArray
-        // perform subtraction: normal api call - 5yearaverage api call
-        // try coloring data
-      this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetProgressVsAverage?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}&week=WEEK%20%2323`)
+      this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetMetricVsAverage?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=${this.selectedYear}&short_desc=${this.selectedShortDesc}&week=${this.selectedWeek}`)
+
       //api call is no good
       this.getUsda5YearSubscription = this.usdaData5Year$
         .subscribe({
@@ -171,7 +164,51 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
           }
         })
         console.log(this.fiveYearArray)
-        this.selectedMetric = 'PROGRESS'
+        // this.selectedMetric = 'PROGRESS'
+        break;
+    
+    // this.selectedShortDesc = `${this.selectedCommodity} - CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT`;
+    //   // make 2nd API for 5-year average?
+    //   this.usdaData$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetUsdaDataStates?Metric=${this.selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}`)
+
+    // this.getUsdaSubscription = this.usdaData$
+    // .subscribe({
+    //   next: (response) => {
+    //   }
+    // })
+    //   this.selectedMetric = 'CONDITION'
+    //   break;
+    // case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED':
+    case 'PROGRESS,':
+      // this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED`;
+      if (selectedCommodity == 'WHEAT') {
+        this.selectedShortDesc = `${this.selectedCommodity} + ', WINTER' - ${this.selectedMetric}`;
+      }
+      else {
+        this.selectedShortDesc = `${this.selectedCommodity} - ${this.selectedMetric}`;
+      }
+        // make 2nd API for 5-year average?
+        // populate a similar array as mapArray
+        // perform subtraction: normal api call - 5yearaverage api call
+        // try coloring data
+      // this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetProgressVsAverage?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=2022&short_desc=${this.selectedShortDesc}&week=WEEK%20%2323`)
+      this.usdaData5Year$ = this.http.get<Datum[]>(`${environment.backendUrl}/api/GetMetricVsAverage?Metric=${selectedMetric}&Commodity=${this.selectedCommodity}&Year=${this.selectedYear}&short_desc=${this.selectedShortDesc}&week=${this.selectedWeek}`)
+
+      //api call is no good
+      this.getUsda5YearSubscription = this.usdaData5Year$
+        .subscribe({
+          next: (response) => {
+            debugger
+            response.forEach(element => {
+              this.fiveYearArray.push({
+                state_alpha: element.state_alpha,
+                value: parseInt(element.value)
+              })
+            })
+          }
+        })
+        console.log(this.fiveYearArray)
+        // this.selectedMetric = 'PROGRESS'
         break;
     case 'AREA PLANTED':
       this.selectedShortDesc = `${selectedCommodity} - ACRES PLANTED`
@@ -279,6 +316,16 @@ PopulateData(element: Datum) {
 }
 
 getDataForState(stateName: string) {
+  // const result = this.fiveYearArray.find((value,index,array) => {
+  //   value.state_alpha === stateName
+  // })
+  // return (result) ? result : (stateName + "N/A")
+  
+  // const result = this.fiveYearArray.find((value) => 
+  //   value.state_alpha === stateName);
+  // return result || "N/A";
+
+  //THIS WORKS
   return this.fiveYearArray.find((value, index, array) => {
     return value.state_alpha == stateName;
   })

@@ -205,7 +205,7 @@
     fill: green;
     stroke: red;
     stroke-width: 3px;
-    transition: fill 0.4s ease-in-out;
+    transition: fill 0.3s ease-in-out;
   }
 
   .svg-color {
