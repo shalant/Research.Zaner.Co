@@ -140,7 +140,7 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
   switch (this.selectedMetric.substring(0,9)) {
     case 'CONDITION':
     // case 'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT':
-    if (selectedCommodity == 'WHEAT') {
+    if (selectedCommodity === 'WHEAT') {
       this.selectedShortDesc = `${this.selectedCommodity}, WINTER - ${this.selectedMetric}`;
     }
     else {
@@ -181,7 +181,7 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
     // case 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED':
     case 'PROGRESS,':
       // this.selectedShortDesc = `${this.selectedCommodity} - PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED`;
-      if (selectedCommodity == 'WHEAT') {
+      if (selectedCommodity === 'WHEAT') {
         this.selectedShortDesc = `${this.selectedCommodity} + ', WINTER' - ${this.selectedMetric}`;
       }
       else {
@@ -266,7 +266,7 @@ loadData(selectedCommodity: string, selectedMetric: string, selectedYear: string
         next: (response) => {
           debugger
           response.forEach(element => {
-            if(element.reference_period_desc == this.selectedWeek) {
+            if(element.reference_period_desc === this.selectedWeek) {
               this.mapArray.push({
                 state_alpha: element.state_alpha,
                 value: parseInt(element.value)
@@ -327,13 +327,13 @@ getDataForState(stateName: string) {
 
   //THIS WORKS
   return this.fiveYearArray.find((value, index, array) => {
-    return value.state_alpha == stateName;
+    return value.state_alpha === stateName;
   })
 }
 
 getDataForStateSingleYear(stateName: string) {
   return this.mapArray.find((value, index, array) => {
-    return value.state_alpha == stateName;
+    return value.state_alpha === stateName;
   })
 }
 

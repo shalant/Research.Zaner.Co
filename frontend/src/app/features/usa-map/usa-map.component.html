@@ -151,7 +151,6 @@
       <div class="card my-4">
         <div class="card-body">
           <div class="chartBox">
-
             <h4 class="header-title m-3">SVG Map will appear here</h4>
           </div>
         </div>
@@ -171,8 +170,7 @@
               <div class="jvectormap-container" style="background-color: rgba(242,242,242,0.1);">
                 <!-- <svg width="919.6" height="360"> -->
                 <!-- <ng-container *ngIf="selectedMetric == 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED'"> -->
-                  <ng-container *ngIf="selectedMetric === 'PROGRESS, 5 YEAR AVG, MEASURED IN PCT PLANTED' ||
-                  'CONDITION, 5 YEAR AVG, MEASURED IN PCT EXCELLENT'">
+                  <ng-container *ngIf="selectedMetric.substring(0,8) === 'PROGRESS,' || 'CONDITION'">
                     <div class="row">
                       <div class="col-md-6">
                         <h4>{{this.selectedCommodity}} {{this.selectedYear}} {{this.selectedMetric}}</h4>
@@ -447,14 +445,16 @@
                         data-code="US-AL" font-family="" font-size="10" font-weight="bold" cursor="default"  
                         [attr.fill]="this.getColorForState('AL')" class="jvectormap-region jvectormap-element">
                         <!-- {{(usdaData$) ? (mapArray[0].state_alpha): 'AL'}} - {{(usdaData5Year$) ? fiveYearArray[4].value : ''}}</text> -->
-                        {{(this.getDataForState("AL")?.state_alpha) ? this.getDataForState("AL")?.state_alpha : "AL"}} {{(this.getDataForState("AL")?.value) ? (this.getDataForState("AL")?.value) : "AL"}}</text>
+                        <!-- {{(this.getDataForState("AL")?.state_alpha) ? this.getDataForState("AL")?.state_alpha : "AL"}} {{(this.getDataForState("AL")?.value) ? (this.getDataForState("AL")?.value) : ""}}</text> -->
+                        {{this.getDataForState("AL")?.state_alpha}} {{this.getDataForState("AL")?.value}}</text>
                       <text id="AK" text-anchor="middle" alignment-baseline="central" x="290.6416510701941" y="294.5774170573097"
                         data-code="US-AK" font-family="" font-size="10" font-weight="bold" cursor="default"
                         [attr.fill]="this.getColorForState('AK')"  class="jvectormap-region jvectormap-element">
                         <!-- {{mapArray.filter(x => x.state_alpha === "AK")}} -->
                         <!-- {{smartChartData[smartChartData..indexOf("AK")].state_alpha}} - {{mapArray[3].value}}</text> -->
                         <!-- AK - {{fiveYearArray[1].state_alpha}} - {{fiveYearArray[1].value}}</text> -->
-                        {{(this.getDataForState("AK")?.state_alpha) ? this.getDataForState("AK")?.state_alpha : "AK - no data"}} {{this.getDataForState("AK")?.value}}</text>
+                        <!-- {{(this.getDataForState("AK")?.state_alpha) ? this.getDataForState("AK")?.state_alpha : "AK - no data"}} {{this.getDataForState("AK")?.value}}</text> -->
+                        {{this.getDataForState("AK")?.state_alpha}} {{this.getDataForState("AK")?.value}}</text>  
                       <text id="AR" text-anchor="middle" alignment-baseline="central" x="510.34676287847054" y="205.49081438768047" 
                         data-code="US-AR" font-family="" font-size="10" font-weight="bold" cursor="default" 
                         [attr.fill]="this.getColorForState('AR')"  class="jvectormap-region jvectormap-element">
@@ -467,8 +467,9 @@
                         data-code="US-AZ" font-family="" font-size="10" font-weight="bold" cursor="default"
                         [attr.fill]="this.getColorForState('AZ')"  class="jvectormap-region jvectormap-element">
                        <!-- {{fiveYearArray[0].state_alpha}} {{fiveYearArray[0].value}}</text> -->
-                       {{(this.getDataForState("AZ")?.state_alpha ? this.getDataForState("AZ")?.state_alpha : "AZ- N/A")}} {{this.getDataForState("AZ")?.value}}</text>
-                      <text id="CA" text-anchor="middle" alignment-baseline="central" x="232.4410202692685" y="160.56978343493907"
+                       <!-- {{(this.getDataForState("AZ")?.state_alpha ? this.getDataForState("AZ")?.state_alpha : "AZ- N/A")}} {{this.getDataForState("AZ")?.value}}</text> -->
+                       {{this.getDataForState("AZ")?.state_alpha}} {{this.getDataForState("AZ")?.value}}</text>
+                       <text id="CA" text-anchor="middle" alignment-baseline="central" x="232.4410202692685" y="160.56978343493907"
                         data-code="US-CA" font-family="" font-size="10" font-weight="bold" cursor="default"
                         [attr.fill]="this.getColorForState('CA')"  class="jvectormap-region jvectormap-element">
                         {{this.getDataForState("CA")?.state_alpha}} {{this.getDataForState("CA")?.value}}</text>
@@ -657,9 +658,10 @@
                     <g></g>
                     <g></g>
                   </svg>
+                  <p>Created with ZanerAgHedge's proprietary software</p>
                 </ng-container>
 
-                <ng-container *ngIf="selectedMetric != 'PROGRESS'">
+                <ng-container *ngIf="selectedMetric == 'PROGRESS'">
                   <div class="row">
                     <div class="col-md-6">
                       <p>map 2</p>
